@@ -1,0 +1,88 @@
+[
+  {
+    "id": 1,
+    "name" : "YAM'S",
+    "actionType": "ROUND",
+    "playerData": {
+      "min" : 2,
+      "max" : null,
+      "orderMode": "STANDARD"
+    },
+    "startMode": "RANDOM",
+    "endMode": "ALL_VALUES_FILLED",
+    "scoreLimit": null,
+    "showScore": false,
+    "timeAfterRound": 2,
+    "actionList" : [
+        {"type": "ROLL_DICE", "index" : 1,"diceTotal": 5, "required": true ,  "continueMode": false },
+        {"type": "CHECK_SCORE_CELL", "index" : 2, "required": true ,  "continueMode": false }
+    ],
+    "individualScoreSheet": [
+      {"key":  "TOTAL_1", "label" : "Total de 1", "editable" : true, "type" : "CHECKBOX"},
+      {"key":  "TOTAL_2", "label" : "Total de 2", "editable" : true, "type" : "CHECKBOX"},
+      {"key":  "TOTAL_3", "label" : "Total de 3", "editable" : true, "type" : "CHECKBOX"},
+      {"key":  "TOTAL_4", "label" : "Total de 4", "editable" : true, "type" : "CHECKBOX"},
+      {"key":  "TOTAL_5", "label" : "Total de 5", "editable" : true, "type" : "CHECKBOX"},
+      {"key":  "TOTAL_6", "label" : "Total de 6", "editable" : true, "type" : "CHECKBOX"},
+      {"key":  "GLOBAL_TOTAL_1", "label" : "Total 1"},
+      {"key":  "TOTAL_BONUS", "label" : "Si >63 >>> +35"},
+      {"key":  "BRELAN", "label" : "Brelan (Total des 3 dés)", "editable" : true, "type" : "CHECKBOX"},
+      {"key":  "CARRE", "label" : "Carré (Total des 4 dés)", "editable" : true, "type" : "CHECKBOX"},
+      {"key":  "FULL", "label" : "Full (25)", "editable" : true, "type" : "CHECKBOX"},
+      {"key":  "SMALL_STRAIGHT", "label" : "Petite suite (30)", "editable" : true, "type" : "CHECKBOX"},
+      {"key":  "LARGE_STRAIGHT", "label" : "Grande suite (40)", "editable" : true, "type" : "CHECKBOX"},
+      {"key":  "YAMS", "label" : "Yams (50)", "editable" : true, "type" : "CHECKBOX"},
+      {"key":  "CHANCE", "label" : "Chance (Total des 5 dés)", "editable" : true, "type" : "CHECKBOX"},
+      {"key":  "GLOBAL_TOTAL_2", "label" : "Total 2"},
+      {"key":  "GLOBAL_TOTAL_FINAL", "label" : "Grand total"}
+    ]
+  },
+  {
+    "id": 2,
+    "name" : "Bataille",
+    "actionType": "SIMULTANEOUS",
+    "playerData": {
+      "min" : 2,
+      "max" : 2,
+      "orderMode": "SAME_TIME"
+    },
+    "startMode": "RANDOM",
+    "endMode": "NO_CARD",
+    "scoreLimit": null,
+    "showScore": false,
+    "timeAfterRound": 2,
+    "elementList" : [
+      {"type": "CARD_DECK", "subtype": "32_CARDS_SET", "initMode": "DEAL_BETWEEN_PLAYERS"
+      }
+    ],
+    "actionList" : [
+      {"type": "PLAY_CARD", "index" : 1,"required": true ,  "continueMode": false }
+    ]
+  },
+  {
+    "id": 3,
+    "name" : "Kingdom Dice Game",
+    "actionType": "ROUND",
+    "playerData": {
+      "min" : 2,
+      "max" : 2,
+      "orderMode": "STANDARD"
+    },
+    "startMode": "RANDOM",
+    "endMode": "SCORE_LIMIT_INSTANT",
+    "showScore": true,
+    "scoreLimit": {
+        "value": 2000,
+        "editable": true,
+        "min": null,
+        "max": null
+    },
+    "actionList" : [
+      {"type": "ROLL_DICE", "index" : 1,"diceTotal": 6 ,  "continueMode": false},
+      {"type": "SELECT_DICE", "index" : 2,"diceTotal": 6 ,
+        "continueMode": true,
+        "continueStepIndex" : 1, "instruction": "Sélectionnez les dés à garder et relancez les autres"}
+    ],
+    "timeAfterRound": 2
+  }
+]

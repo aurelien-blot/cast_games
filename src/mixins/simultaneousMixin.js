@@ -10,6 +10,21 @@ export default {
         },
         isGlobalCurrentRoundAction(){
             return this.isGlobalCurrentRound && this.globalCurrentRound.currentAction!=null;
+        },
+        isGlobalCurrentRoundDone(){
+            if(this.playerList!=null && this.playerList.length>0){
+                 let result = true;
+                this.playerList.forEach(player => {
+                    if(player.currentRound!=null && !player.currentRound.done){
+                        result= false;
+                    }
+                });
+                return result;
+            }
+            return false;
+        },
+        showEndGlobalRoundButton() {
+            return this.isGlobalCurrentRoundDone;
         }
     },
     methods: {
@@ -19,10 +34,12 @@ export default {
                     elementList : [],
                     pickedCard : null,
                     done : false,
+                    finished : false,
                 }
             });
             this.globalCurrentRound = {
                 done : false,
+                finished : false,
                 currentAction : null,
             }
         },
@@ -52,6 +69,7 @@ export default {
         initGlobalAction(action){
             this.globalCurrentRound.currentAction=Object.assign({}, action);
             this.globalCurrentRound.currentAction.done=false;
+            this.globalCurrentRound.currentAction.finished=false;
             this.startAction();
         },
         startAction() {
@@ -64,6 +82,9 @@ export default {
                 }
             }
         },
+        endGlobalRound(player){
+            player.currentRound.finished = true;
+        }
     },
 
 }

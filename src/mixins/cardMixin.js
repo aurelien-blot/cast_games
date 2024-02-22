@@ -21,6 +21,7 @@ export default {
                     { key :"CLUBS",label : "Trèfle" },
                     { key :"SPADES",label : "Pique" }];
                 colors.forEach(color => {
+                    deckContent.push({value: 14, label: this.getClassicCardLabel("As", color) + color.label, color: color.key,  id : 1+ "_" + color.key, selected: false});
                     if(deckType==="64_CARDS_SET"){
                         for (let i = 2; i < 7; i++) {
                             let value=i;

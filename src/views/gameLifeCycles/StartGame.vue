@@ -9,6 +9,15 @@
     <card-area-component v-if="currentActionType==='PLAY_CARD'"
                          :on-pick-card="pickCard"
                          :player-list="playerList"/>
+    <div class="row mt-3" v-if="isGlobalCurrentRoundDone">
+        <div class="col-6 text-center" v-for="(player, index) in playerList" :key="index">
+          <button v-if="showEndGlobalRoundButton"
+                  :disabled="player.currentRound!=null && player.currentRound.finished"
+                  class="btn btn-danger btn-md ms-2" @click="endGlobalRound(player)">
+            <span>Fin du tour</span>
+          </button>
+        </div>
+    </div>
   </template>
   <template v-if="gameContent!=null && [1,3].includes(gameContent.id)">
     <dice-area-component v-if="actionIsRollDice"

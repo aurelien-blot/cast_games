@@ -23,6 +23,18 @@ export default {
             }
             return false;
         },
+        isGlobalCurrentRoundFinished(){
+            if(this.playerList!=null && this.playerList.length>0){
+                 let result = true;
+                this.playerList.forEach(player => {
+                    if(player.currentRound!=null && !player.currentRound.finished){
+                        result= false;
+                    }
+                });
+                return result;
+            }
+            return false;
+        },
         showEndGlobalRoundButton() {
             return this.isGlobalCurrentRoundDone;
         }
@@ -46,20 +58,23 @@ export default {
         playSimultaneous() {
             this.playSimultaneousActions();
             return new Promise(resolve => {
-                if (this.globalCurrentRound.done) {
-                    if(this.isTestMode) {
-                        resolve();
+                //TODO LOOP INFINIE A REVOIR
+                const checkIfRoundEnded = () => {
+                    if (this.isGlobalCurrentRoundDone) {
+                        if(this.isTestMode) {
+                            resolve();
+                        }
+                        else if(this.gameContent.timeAfterRound!=null){
+                            setTimeout(resolve, (this.gameContent.timeAfterRound *1000));
+                        } else {
+                            resolve();
+                        }
                     }
-                    else if(this.gameContent.timeAfterRound!=null){
-                        setTimeout(resolve, (this.gameContent.timeAfterRound *1000));
-                    } else {
-                        resolve();
+                    else {
+                        setTimeout(checkIfRoundEnded, 500);
                     }
-                }
-                const checkIfSimultaneousEnded = () => {
-                    setTimeout(checkIfSimultaneousEnded, 500);
                 };
-                checkIfSimultaneousEnded();
+                checkIfRoundEnded();
             });
         },
         playSimultaneousActions() {
@@ -84,7 +99,22 @@ export default {
         },
         endGlobalRound(player){
             player.currentRound.finished = true;
-        }
+        },
+        resolveDoneRoundAction(){
+            let winner = this.calculateRoundWinner();
+            console.log(winner.name)
+            //this.doDoneRoundAction();
+        },
+        calculateRoundWinner(){
+            let winner = null;
+            this.playerList.forEach(player => {
+                if(winner==null || player.currentRound.pickedCard.value>winner.currentRound.pickedCard.value){
+                    winner = player;
+                }
+            });
+            return winner;
+        },
+
     },
 
 }

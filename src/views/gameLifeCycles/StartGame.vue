@@ -183,6 +183,7 @@ export default {
         }
         else if(this.isSimultaneousGame){
           await this.playSimultaneous();
+          this.resolveDoneRoundAction();
         }
       }
       this.onEndGame();

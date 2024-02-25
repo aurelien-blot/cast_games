@@ -52,7 +52,7 @@
     "showScore": false,
     "timeAfterRound": 2,
     "elementList" : [
-      {"type": "CARD_DECK", "subtype": "32_CARDS_SET", "initMode": "DEAL_BETWEEN_PLAYERS"
+      {"key": "MAIN_DECK", "type": "CARD_DECK", "subtype": "32_CARDS_SET", "initMode": "DEAL_BETWEEN_PLAYERS", "discardMode" : "BY_PLAYER"
       }
     ],
     "actionList" : [

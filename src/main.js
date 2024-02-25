@@ -13,7 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
 
 import { faDice, faDiceOne, faDiceTwo, faDiceThree, faDiceFour, faDiceFive, faDiceSix,
-    faCheck} from '@fortawesome/free-solid-svg-icons'
+    faCheck, faCross} from '@fortawesome/free-solid-svg-icons'
 
 /* add icons to the library */
 library.add(faDice)
@@ -24,6 +24,7 @@ library.add(faDiceFour)
 library.add(faDiceFive)
 library.add(faDiceSix)
 library.add(faCheck)
+library.add(faCross)
 
 const app = createApp(App);
 app.use(router);

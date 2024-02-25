@@ -1,7 +1,12 @@
+import DiceMixin from "@/mixins/diceMixin.js";
+import CardMixin from "@/mixins/cardMixin.js";
+
 export default {
+    mixins: [DiceMixin,CardMixin],
     data() {
         return {
             globalCurrentRound : null,
+            roundWinnerList : [],
         };
     },
     computed: {
@@ -41,26 +46,33 @@ export default {
     },
     methods: {
         initSimultaneousDatas() {
+            this.initGlobalRound();
+        },
+        initGlobalRound(){
+            this.globalCurrentRound = {
+                done : false,
+                finished : false,
+                currentAction : null,
+                potElementList : [],
+            }
+            this.initPlayerRound();
+        },
+        initPlayerRound(player){
             this.playerList.forEach(player => {
                 player.currentRound={
-                    elementList : [],
                     pickedCard : null,
                     done : false,
                     finished : false,
                 }
             });
-            this.globalCurrentRound = {
-                done : false,
-                finished : false,
-                currentAction : null,
-            }
         },
         playSimultaneous() {
+            this.initGlobalRound();
             this.playSimultaneousActions();
             return new Promise(resolve => {
-                //TODO LOOP INFINIE A REVOIR
                 const checkIfRoundEnded = () => {
-                    if (this.isGlobalCurrentRoundDone) {
+                    if (this.isGlobalCurrentRoundFinished) {
+                        this.dealPotCards();
                         if(this.isTestMode) {
                             resolve();
                         }
@@ -100,19 +112,57 @@ export default {
         endGlobalRound(player){
             player.currentRound.finished = true;
         },
-        resolveDoneRoundAction(){
-            let winner = this.calculateRoundWinner();
-            console.log(winner.name)
-            //this.doDoneRoundAction();
+        playSimultaneousAction(player) {
+            if(this.currentActionType==="PLAY_CARD"){
+               this.pickCard(player);
+               this.globalCurrentRound.potElementList.push(player.currentRound.pickedCard);
+            }
+            if(this.isGlobalCurrentRoundDone){
+                this.resolveDoneRoundAction();
+            }
         },
-        calculateRoundWinner(){
-            let winner = null;
+        calculateRoundWinnerList(){
+            let winnerList = [];
+            let maxCardValue = 0;
             this.playerList.forEach(player => {
-                if(winner==null || player.currentRound.pickedCard.value>winner.currentRound.pickedCard.value){
-                    winner = player;
+                if(player.currentRound.pickedCard.value>maxCardValue){
+                    maxCardValue = player.currentRound.pickedCard.value;
                 }
             });
-            return winner;
+            this.playerList.forEach(player => {
+                if(player.currentRound.pickedCard.value===maxCardValue){
+                    winnerList.push(player);
+                }
+            });
+            return winnerList;
+        },
+        resolveDoneRoundAction(){
+            this.roundWinnerList = this.calculateRoundWinnerList();
+
+        },
+        dealPotCards(){
+            if(this.roundWinnerList.length===0){
+                console.error("no winner")
+            }
+            else if(this.roundWinnerList.length===1){
+                let winner = this.playerList.find(player => player.id===this.roundWinnerList[0].id);
+                if(winner!=null){
+                    let discardElementList = [...winner.discardElementList];
+                    let winnerDiscard = discardElementList.find(element => element.key==="MAIN_DECK");
+                    if(winnerDiscard!=null){
+                        winnerDiscard.value.push(...this.globalCurrentRound.potElementList);
+                    }
+                    winner.discardElementList=discardElementList;
+                }
+                this.globalCurrentRound.potElementList = [];
+            }
+            else{
+                this.playEqualityAction();
+            }
+        },
+        playEqualityAction(){
+            /*let actions = [...this.gameContent.actionList].sort((a, b) => a.index - b.index);
+            this.initGlobalAction(actions[0]);*/
         },
 
     },

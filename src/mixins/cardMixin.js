@@ -21,7 +21,6 @@ export default {
                     { key :"CLUBS",label : "Trèfle" },
                     { key :"SPADES",label : "Pique" }];
                 colors.forEach(color => {
-                    deckContent.push({value: 14, label: this.getClassicCardLabel("As", color) + color.label, color: color.key,  id : 1+ "_" + color.key, selected: false});
                     if(deckType==="64_CARDS_SET"){
                         for (let i = 2; i < 7; i++) {
                             let value=i;
@@ -29,7 +28,7 @@ export default {
                         }
                     }
                     if(deckType==="64_CARDS_SET" || deckType==="32_CARDS_SET"){
-                        deckContent.push({value: 14, label: "1", color: color.key,  id : 1+ "_" + color.key, selected: false});
+                        deckContent.push({value: 14, label: this.getClassicCardLabel("As", color), color: color.key,  id : 1+ "_" + color.key, selected: false});
                         for (let i = 7; i < 14; i++) {
                             let label;
                             if(i<=10){
@@ -50,7 +49,7 @@ export default {
                                         break;
                                 }
                             }
-                            deckContent.push({value: i, label:this.getClassicCardLabel(label, color),  color: color,  id : label+ "_" + color, selected: false});
+                            deckContent.push({value: i, label:this.getClassicCardLabel(label, color),  color: color,  id : label+ "_" + color.key, selected: false});
                         }
                     }
                 });
@@ -61,11 +60,12 @@ export default {
             return value + " de " + color.label;
         },
         pickCard(player){
+            let deck = player.elementList.find(element => element.key==="MAIN_DECK").value;
             if(player.currentRound.done){
                 return;
             }
-            let deck = player.currentRound.elementList.find(element => element.field==="MAIN_DECK").value;
             player.currentRound.pickedCard = this.pickTopCard(deck);
+            deck.pop();
             player.currentRound.done = true;
         },
         pickTopCard(deck){

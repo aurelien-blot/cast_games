@@ -17,6 +17,8 @@ export default {
             this.playerList.forEach(player => {
                 player.score = 0;
                 player.order = player.initialOrder;
+                player.elementList=[];
+                player.discardElementList=[];
                 if(this.gameContent.individualScoreSheet!=null){
                     player.scoreSheet = this.initScoreSheet();
                 }

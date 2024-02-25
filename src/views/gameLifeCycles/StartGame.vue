@@ -7,7 +7,8 @@
 
   <template v-if="gameContent!=null && gameContent.id==2">
     <card-area-component v-if="currentActionType==='PLAY_CARD'"
-                         :on-pick-card="pickCard"
+                         :on-pick-card="playSimultaneousAction"
+                          :deck-key="'MAIN_DECK'"
                          :player-list="playerList"/>
     <div class="row mt-3" v-if="isGlobalCurrentRoundDone">
         <div class="col-6 text-center" v-for="(player, index) in playerList" :key="index">
@@ -183,7 +184,6 @@ export default {
         }
         else if(this.isSimultaneousGame){
           await this.playSimultaneous();
-          this.resolveDoneRoundAction();
         }
       }
       this.onEndGame();

@@ -6,7 +6,7 @@
   </div>
 
   <template v-if="gameContent!=null && gameContent.id==2">
-    <card-area-component v-if="currentActionType==='PLAY_CARD'"
+    <card-area-component v-if="currentActionArea==='CARD'"
                          :on-pick-card="playSimultaneousAction"
                           :deck-key="'MAIN_DECK'"
                          :player-list="playerList"/>
@@ -35,7 +35,7 @@
                          :dice-result-list="activeDiceResult"/>
     <div class="row mt-3 mb-3">
       <div class="col-6 offset-3 text-center" >
-        <ScoreSheetComponent v-if="currentActionType==='CHECK_SCORE_CELL'"
+        <ScoreSheetComponent v-if="currentActionArea==='SCORE_SHEET'"
                              :editable="!scoreCellChekDisabled"
                              :check-score-sheet-cell="checkScoreSheetCell"
                              :score-sheet-model="gameContent.individualScoreSheet"
@@ -89,6 +89,7 @@ import PlayerMixin from "@/mixins/playerMixin.js";
 import CardAreaComponent from "@/components/CardAreaComponent.vue";
 import RoundMixin from "@/mixins/roundMixin.js";
 import SimultaneousMixin from "@/mixins/simultaneousMixin.js";
+import EventActionMixin from "@/mixins/eventActionMixin.js";
 
 export default {
   name: 'StartGame',
@@ -116,7 +117,7 @@ export default {
       required: false
     }
   },
-  mixins: [PlayerMixin, GameElementMixin, ScoreSheetMixin, ScoreMixin, RoundMixin, SimultaneousMixin],
+  mixins: [PlayerMixin, GameElementMixin, ScoreSheetMixin, ScoreMixin, RoundMixin, SimultaneousMixin, EventActionMixin],
   data() {
     return {
       testScoreResult: false,
@@ -149,11 +150,16 @@ export default {
     isRoundGame(){
       return this.actionType==='ROUND';
     },
-    isCurrentRound(){
-      return this.activePlayer!=null &&this.activePlayer.currentRound!=null;
-    },
-    isCurrentRoundAction(){
-      return this.isCurrentRound && this.activePlayer.currentRound.currentAction!=null;
+    currentActionArea() {
+      if(this.isSimultaneousGame){
+        return this.isGlobalCurrentRoundAction? this.globalCurrentRound.currentAction.area:null;
+      }
+      else if(this.isRoundGame){
+        return this.isCurrentRoundAction ? this.activePlayer.currentRound.currentAction.area : null;
+      }
+      else{
+        return null;
+      }
     },
     currentActionType() {
       if(this.isSimultaneousGame){

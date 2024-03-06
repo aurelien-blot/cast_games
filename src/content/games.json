@@ -15,7 +15,7 @@
     "timeAfterRound": 2,
     "actionList" : [
         {"type": "ROLL_DICE", "index" : 1,"diceTotal": 5, "required": true ,  "continueMode": false },
-        {"type": "CHECK_SCORE_CELL", "index" : 2, "required": true ,  "continueMode": false }
+        {"type": "CHECK_SCORE_CELL", "area" : "SCORE_SHEET","index" : 2, "required": true ,  "continueMode": false }
     ],
     "individualScoreSheet": [
       {"key":  "TOTAL_1", "label" : "Total de 1", "editable" : true, "type" : "CHECKBOX"},
@@ -56,7 +56,10 @@
       }
     ],
     "actionList" : [
-      {"type": "PLAY_CARD", "index" : 1,"required": true ,  "continueMode": false }
+      {"type": "PLAY_CARD", "area": "CARD","index" : 1,"required": true ,  "continueMode": false }
+    ],
+    "eventActionList" : [
+      {"type": "CARD_IN_POT", "area": "CARD", "condition" : "DRAW"}
     ]
   },
   {

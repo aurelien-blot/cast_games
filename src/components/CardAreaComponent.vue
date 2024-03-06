@@ -24,8 +24,11 @@
                 </div>
               </div>
             </div>
-            <div class="col-6" v-if="player.currentRound!=null && player.currentRound.pickedCard!=null">
-              <div class="card-area">
+            <div class="col-6" v-if="player.currentRound!=null">
+              <div class="card-area" v-if="player.currentRound.draw">
+                <div class="deck main-deck" ></div>
+              </div>
+              <div class="card-area" v-else-if="player.currentRound.pickedCard!=null">
                 <CardComponent :label="player.currentRound.pickedCard.label"/>
               </div>
             </div>

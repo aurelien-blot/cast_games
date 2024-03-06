@@ -69,6 +69,15 @@ export default {
             player.currentRound.done = true;
         },
         pickTopCard(deck){
+            if(this.isTestMode){
+                return {
+                    color :{key: 'DIAMONDS', label: 'Carreau'},
+                    id : "9_DIAMONDS",
+                    label : "9 de Carreau",
+                    selected : false,
+                    value : 9
+                }
+            }
             return deck[deck.length-1];
         }
     },

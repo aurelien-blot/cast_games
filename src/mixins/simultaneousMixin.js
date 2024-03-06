@@ -17,10 +17,16 @@ export default {
             return this.isGlobalCurrentRound && this.globalCurrentRound.currentAction!=null;
         },
         isGlobalCurrentRoundDone(){
+            if(this.roundWinnerList===null || this.roundWinnerList.length!==1){
+                return false;
+            }
+            return this.isAllPlayerRoundDone;
+        },
+        isGlobalCurrentRoundFinished(){
             if(this.playerList!=null && this.playerList.length>0){
                  let result = true;
                 this.playerList.forEach(player => {
-                    if(player.currentRound!=null && !player.currentRound.done){
+                    if(player.currentRound!=null && !player.currentRound.finished){
                         result= false;
                     }
                 });
@@ -28,11 +34,11 @@ export default {
             }
             return false;
         },
-        isGlobalCurrentRoundFinished(){
+        isAllPlayerRoundDone(){
             if(this.playerList!=null && this.playerList.length>0){
-                 let result = true;
+                let result = true;
                 this.playerList.forEach(player => {
-                    if(player.currentRound!=null && !player.currentRound.finished){
+                    if(player.currentRound!=null && !player.currentRound.done){
                         result= false;
                     }
                 });
@@ -100,9 +106,11 @@ export default {
             this.startAction();
         },
         startAction() {
-            if(this.isCurrentRoundAction) {
+            if(this.isGlobalCurrentRoundAction) {
                 switch (this.globalCurrentRound.currentAction.type) {
                     case "PLAY_CARD":
+                        break;
+                    case "CARD_IN_POT":
                         break;
                     default:
                         this.globalCurrentRound.currentAction = null;
@@ -117,34 +125,30 @@ export default {
                this.pickCard(player);
                this.globalCurrentRound.potElementList.push(player.currentRound.pickedCard);
             }
-            if(this.isGlobalCurrentRoundDone){
-                this.resolveDoneRoundAction();
+            this.roundWinnerList = this.calculateRoundWinnerList();
+            if(this.roundWinnerList.length>1){
+                this.playDrawAction();
             }
         },
         calculateRoundWinnerList(){
             let winnerList = [];
-            let maxCardValue = 0;
-            this.playerList.forEach(player => {
-                if(player.currentRound.pickedCard.value>maxCardValue){
-                    maxCardValue = player.currentRound.pickedCard.value;
-                }
-            });
-            this.playerList.forEach(player => {
-                if(player.currentRound.pickedCard.value===maxCardValue){
-                    winnerList.push(player);
-                }
-            });
+            if(this.isAllPlayerRoundDone){
+                let maxCardValue = 0;
+                this.playerList.forEach(player => {
+                    if(player.currentRound.pickedCard.value>maxCardValue){
+                        maxCardValue = player.currentRound.pickedCard.value;
+                    }
+                });
+                this.playerList.forEach(player => {
+                    if(player.currentRound.pickedCard.value===maxCardValue){
+                        winnerList.push(player);
+                    }
+                });
+            }
             return winnerList;
         },
-        resolveDoneRoundAction(){
-            this.roundWinnerList = this.calculateRoundWinnerList();
-
-        },
         dealPotCards(){
-            if(this.roundWinnerList.length===0){
-                console.error("no winner")
-            }
-            else if(this.roundWinnerList.length===1){
+            if(this.roundWinnerList.length===1){
                 let winner = this.playerList.find(player => player.id===this.roundWinnerList[0].id);
                 if(winner!=null){
                     let discardElementList = [...winner.discardElementList];
@@ -157,12 +161,13 @@ export default {
                 this.globalCurrentRound.potElementList = [];
             }
             else{
-                this.playEqualityAction();
+                console.error("no winner");
             }
         },
-        playEqualityAction(){
-            /*let actions = [...this.gameContent.actionList].sort((a, b) => a.index - b.index);
-            this.initGlobalAction(actions[0]);*/
+        playDrawAction(){
+            if(this.drawAction!=null){
+                this.initGlobalAction(this.drawAction);
+            }
         },
 
     },

@@ -1,11 +1,26 @@
 <template>
-  <loading-component :is-loading="isLoading"></loading-component>
+  <LoadingComponent :is-loading="isLoading"></LoadingComponent>
+  <SignInModalComponent v-if="showSignInModal"
+      :on-close="hideSignInModal"/>
+  <SignUpModalComponent  v-if="showSignUpModal"
+                         :on-close="hideSignUpModal"/>
   <div class="container">
     <header class="app-bar">
       <div class="row">
         <div class="col-6">
           <h1 class="app-title">Jeux</h1>
         </div>
+        <div class="col-2" v-if="isLoggedIn">
+          <div class="btn btn-danger" @click="logout()" ></div>
+        </div>
+        <div class="col-2" v-if="!isLoggedIn">
+          <div class="btn btn-success" @click="signIn()" >S'inscrire</div>
+        </div>
+        <div class="col-3" v-if="!isLoggedIn">
+          <div class="btn btn-success" @click="signUp()" >Se connecter</div>
+        </div>
+      </div>
+      <div class="row">
         <div class="col-2 mt-2" v-for="(game, index) in gameList" :key="index">
           <span class="btn btn-secondary" @click="loadGame(game)">{{game.name}}</span>
         </div>
@@ -27,11 +42,19 @@
 import Game from "@/views/Game.vue";
 import gamesJson from '@/content/games.json';
 import { v4 as uuidv4 } from 'uuid';
-import LoadingComponent from "@/components/LoadingComponent.vue";
+import LoadingComponent from "@/components/game/LoadingComponent.vue";
 import {mapGetters} from "vuex";
+import SignUpModalComponent from "@/components/modal/login/SignUpModalComponent.vue";
+import SignInModalComponent from "@/components/modal/login/SignInModalComponent.vue";
+import BasicModalComponent from "@/components/modal/BasicModalComponent.vue";
+import WarningModalComponent from "@/components/modal/WarningModalComponent.vue";
 export default {
   name: 'Home',
   components: {
+    WarningModalComponent,
+    BasicModalComponent,
+    SignInModalComponent,
+    SignUpModalComponent,
     LoadingComponent,
     Game,
   },
@@ -40,11 +63,16 @@ export default {
       gameList: [],
       mainPlayer :null,
       gameContent:null,
-      isLoading: false
+      isLoading: false,
+      showSignUpModal: false,
+      showSignInModal: true,
     }
   },
   computed: {
-    ...mapGetters(['isTestMode'])
+    ...mapGetters(['isTestMode']),
+    isLoggedIn() {
+      return this.$store.getters['auth/isLoggedIn'];
+    }
   },
   methods: {
     loadGameListFromJson() {
@@ -57,6 +85,21 @@ export default {
     loadPlayer(){
       this.mainPlayer = {name: "Robert", id: uuidv4()};
     },
+    logout(){
+        this.$store.dispatch("auth/logout");
+    },
+    signIn(){
+      this.showSignInModal = true;
+    },
+    signUp(){
+      this.showSignUpModal = true;
+    },
+    hideSignUpModal(){
+      this.showSignUpModal = false;
+    },
+    hideSignInModal(){
+      this.showSignInModal = false;
+    }
   },
   mounted() {
     this.loadGameListFromJson();

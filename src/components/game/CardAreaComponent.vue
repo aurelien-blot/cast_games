@@ -39,7 +39,7 @@
   </div>
 </template>
 <script >
-import CardComponent from "@/components/CardComponent.vue";
+import CardComponent from "@/components/game/CardComponent.vue";
 
 export default {
   name: 'CardAreaComponent',

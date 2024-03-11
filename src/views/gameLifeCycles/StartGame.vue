@@ -79,14 +79,14 @@
 
 <script>
 import {mapGetters} from "vuex";
-import ScoreSheetComponent from "@/components/ScoreSheetComponent.vue";
-import DiceAreaComponent from "@/components/DiceAreaComponent.vue";
-import ScoreComponent from "@/components/ScoreComponent.vue";
+import ScoreSheetComponent from "@/components/game/ScoreSheetComponent.vue";
+import DiceAreaComponent from "@/components/game/DiceAreaComponent.vue";
+import ScoreComponent from "@/components/game/ScoreComponent.vue";
 import ScoreSheetMixin from "@/mixins/scoreSheetMixin.js";
 import ScoreMixin from "@/mixins/scoreMixin.js";
 import GameElementMixin from "@/mixins/gameElementMixin.js";
 import PlayerMixin from "@/mixins/playerMixin.js";
-import CardAreaComponent from "@/components/CardAreaComponent.vue";
+import CardAreaComponent from "@/components/game/CardAreaComponent.vue";
 import RoundMixin from "@/mixins/roundMixin.js";
 import SimultaneousMixin from "@/mixins/simultaneousMixin.js";
 import EventActionMixin from "@/mixins/eventActionMixin.js";

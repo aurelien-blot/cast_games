@@ -4,7 +4,7 @@ import router from './router';
 import store from '@/store/store.js';
 
 import './assets/main.css';
-import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap/dist/css/bootstrap.css';
 /* import the fontawesome core */
 
 /* import font awesome icon component */

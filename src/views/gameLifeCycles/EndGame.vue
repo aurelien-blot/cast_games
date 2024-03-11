@@ -23,7 +23,7 @@
 
 <script>
 import {mapGetters} from "vuex";
-import ScoreSheetComponent from "@/components/ScoreSheetComponent.vue";
+import ScoreSheetComponent from "@/components/game/ScoreSheetComponent.vue";
 export default {
   name: 'EndGame',
   components: {

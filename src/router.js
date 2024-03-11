@@ -1,8 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from "@/views/Home.vue";
+import Player from "@/views/Player.vue";
+import store from '@/store/store.js';
 
 const routes = [
     { path: '/', component: Home },
+    { path: '/player', component: Player, meta: { requiresAuth: true } },
 ];
 
 const router = createRouter({
@@ -10,4 +13,13 @@ const router = createRouter({
     routes,
 });
 
+router.beforeEach((to, from, next) => {
+    const isLoggedIn = store.getters['auth/isLoggedIn'];
+    if (to.meta.requiresAuth && !isLoggedIn) {
+        // Redirige l'utilisateur vers la page de connexion si non connecté
+        next({ name: 'login' });
+    } else {
+        next();
+    }
+});
 export default router;

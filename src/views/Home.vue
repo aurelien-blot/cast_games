@@ -11,7 +11,7 @@
           <h1 class="app-title">Jeux</h1>
         </div>
         <div class="col-2" v-if="isLoggedIn">
-          <div class="btn btn-danger" @click="logout()" ></div>
+          <div class="btn btn-danger" @click="doLogOut()" ></div>
         </div>
         <div class="col-2" v-if="!isLoggedIn">
           <div class="btn btn-success" @click="signIn()" >S'inscrire</div>
@@ -43,7 +43,7 @@ import Game from "@/views/Game.vue";
 import gamesJson from '@/content/games.json';
 import { v4 as uuidv4 } from 'uuid';
 import LoadingComponent from "@/components/game/LoadingComponent.vue";
-import {mapGetters} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 import SignUpModalComponent from "@/components/modal/login/SignUpModalComponent.vue";
 import SignInModalComponent from "@/components/modal/login/SignInModalComponent.vue";
 import BasicModalComponent from "@/components/modal/BasicModalComponent.vue";
@@ -65,16 +65,15 @@ export default {
       gameContent:null,
       isLoading: false,
       showSignUpModal: false,
-      showSignInModal: true,
+      showSignInModal: false,
     }
   },
   computed: {
     ...mapGetters(['isTestMode']),
-    isLoggedIn() {
-      return this.$store.getters['auth/isLoggedIn'];
-    }
+    ...mapGetters("auth", ["isLoggedIn", "connectedUser" ]),
   },
   methods: {
+    ...mapActions('auth', ['logout']),
     loadGameListFromJson() {
       this.gameList = gamesJson;
     },
@@ -85,8 +84,10 @@ export default {
     loadPlayer(){
       this.mainPlayer = {name: "Robert", id: uuidv4()};
     },
-    logout(){
-        this.$store.dispatch("auth/logout");
+    async doLogOut(){
+      this.isLoading = true;
+      await this.logout();
+      this.isLoading = false;
     },
     signIn(){
       this.showSignInModal = true;
@@ -97,8 +98,11 @@ export default {
     hideSignUpModal(){
       this.showSignUpModal = false;
     },
-    hideSignInModal(){
+    hideSignInModal(isUserRegistered){
       this.showSignInModal = false;
+      if(isUserRegistered){
+        this.showSignUpModal = true;
+      }
     }
   },
   mounted() {

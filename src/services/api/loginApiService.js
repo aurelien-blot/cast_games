@@ -17,4 +17,8 @@ export default class LoginApiService {
         return await ApiService.post(`${LoginApiService.servicePath}`, user);
     }
 
+    static async confirmMail(token) {
+        return await ApiService.get(`${LoginApiService.servicePath}/verify/mail/${token}`);
+    }
+
 }

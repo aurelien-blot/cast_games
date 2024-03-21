@@ -21,6 +21,10 @@
                  id="password" rules="required|min:8" label="Mot de passe"/>
           <ErrorMessage name="password" class="text-danger" />
         </div>
+        <div class="small">
+          <p><span><a href="#" @click="redirectToResetPassword">Mot de passe oublié ?</a></span></p>
+          <p><span>Vous n'avez pas encore de compte ? <a href="#" @click="redirectToSignIn">Inscrivez-vous</a></span></p>
+        </div>
       </Form>
     </template>
     <template v-slot:footer>
@@ -57,6 +61,14 @@ export default {
   components: {LoadingComponent, Form, ErrorMessage, Field, BasicModalComponent},
   props: {
     onClose: {
+      type: Function,
+      required: true
+    },
+    redirectToSignIn: {
+      type: Function,
+      required: true
+    },
+    redirectToResetPassword: {
       type: Function,
       required: true
     },

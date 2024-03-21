@@ -3,7 +3,10 @@
   <SignInModalComponent v-if="showSignInModal"
       :on-close="hideSignInModal"/>
   <SignUpModalComponent  v-if="showSignUpModal"
-                         :on-close="hideSignUpModal"/>
+                         :on-close="hideSignUpModal"
+                         :redirect-to-sign-in ="redirectToSignIn"
+                         :redirect-to-reset-password ="redirectToResetPassword"/>
+  <PasswordResetModalComponent :on-close="hidePasswordResetModal" v-if="showPasswordResetModal"/>
   <div class="container">
     <header class="app-bar">
       <div class="row">
@@ -48,9 +51,11 @@ import SignUpModalComponent from "@/components/modal/login/SignUpModalComponent.
 import SignInModalComponent from "@/components/modal/login/SignInModalComponent.vue";
 import BasicModalComponent from "@/components/modal/BasicModalComponent.vue";
 import WarningModalComponent from "@/components/modal/WarningModalComponent.vue";
+import PasswordResetModalComponent from "@/components/modal/login/PasswordResetModalComponent.vue";
 export default {
   name: 'Home',
   components: {
+    PasswordResetModalComponent,
     WarningModalComponent,
     BasicModalComponent,
     SignInModalComponent,
@@ -66,6 +71,7 @@ export default {
       isLoading: false,
       showSignUpModal: false,
       showSignInModal: false,
+      showPasswordResetModal: true,
     }
   },
   computed: {
@@ -103,7 +109,18 @@ export default {
       if(isUserRegistered){
         this.showSignUpModal = true;
       }
-    }
+    },
+    redirectToSignIn(){
+      this.hideSignUpModal();
+      this.showSignInModal = true;
+    },
+    redirectToResetPassword(){
+      this.hideSignUpModal();
+      this.showPasswordResetModal = true;
+    },
+    hidePasswordResetModal(){
+      this.showPasswordResetModal = false;
+    },
   },
   mounted() {
     this.loadGameListFromJson();

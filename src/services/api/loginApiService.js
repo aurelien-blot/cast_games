@@ -25,4 +25,8 @@ export default class LoginApiService {
         return await ApiService.post(`${LoginApiService.servicePath}/reset-password/request`, mail);
     }
 
+    static async resetPassword(request) {
+        return await ApiService.post(`${LoginApiService.servicePath}/reset-password`, request);
+    }
+
 }

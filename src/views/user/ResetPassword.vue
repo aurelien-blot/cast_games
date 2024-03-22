@@ -7,10 +7,17 @@
         <div >
           <div v-if="passwordReset!=null && passwordReset.status===true" class="alert alert-success col-6 offset-3">
             <p>Votre mot de passe a bien été réinitialisé.</p>
+            <p>Vous allez être redigiré vers la page d'accueil.</p>
           </div>
-          <div v-if="passwordReset!=null && passwordReset.status===false" class="alert alert-danger col-6 offset-3">
-            <p>Votre mot de passe a bien été réinitialisé.</p>
-          </div>
+          <template v-if="passwordReset!=null && passwordReset.status===false">
+            <div class="alert alert-danger col-6 offset-3">
+              <p>Une erreur a été rencontrée : {{passwordReset.message}}</p>
+              <p>Si cette erreur se répète, contactez l'administrateur.</p>
+            </div>
+            <div class="col-12 text-center">
+              <button type="submit" class="btn btn-primary" @click="refresh()">Réessayer</button>
+            </div>
+          </template>
           <template v-if="passwordReset==null">
             <Form novalidate @submit.prevent="onSubmit" v-if="!passwordReset" class="col-6 offset-3">
               <div class="mb-3">
@@ -45,6 +52,7 @@ import LoginApiService from "@/services/api/loginApiService.js";
 import {Field, defineRule, ErrorMessage, Form, configure} from 'vee-validate';
 import { required, min,confirmed } from '@vee-validate/rules';
 import ErrorService from "@/services/errorService.js";
+import {mapGetters} from "vuex";
 
 defineRule('required', required);
 defineRule('min', min);
@@ -72,9 +80,11 @@ export default {
       passwordReset : null,
       password1:null,
       password2:null,
+      delayAftorReset: 5,
     }
   },
   computed:{
+    ...mapGetters(['isTestMode']),
     canSubmit() {
       return this.password1 !=null && this.password1.length > 7
           && this.password2 !=null && this.password2.length > 7
@@ -87,17 +97,29 @@ export default {
       let token = this.$route.query.token;
       let request = {
         token: token,
-        password: this.password,
-      }
+        password: this.password1,
+      };
       await LoginApiService.resetPassword(request).then((response) => {
         this.passwordReset = response;
       }).catch((error) => {
         ErrorService.showErrorInAlert(error);
       });
+      if(this.passwordReset.status===true){
+        setTimeout(() => {
+          this.$router.push({name: 'Home'});
+        }, this.delayAftorReset * 1000);
+      }
       this.isLoading = false;
+    },
+    refresh(){
+      this.passwordReset = null;
     }
   },
   mounted() {
+    if(this.isTestMode){
+      this.password1 = "password";
+      this.password2 = "password";
+    }
   }
 }
 

@@ -1,5 +1,4 @@
 <template>
-  <LoadingComponent :is-loading="isLoading"></LoadingComponent>
   <BasicModalComponent
       title="Connexion"
       :on-close="onClose">
@@ -75,7 +74,6 @@ export default {
   },
   data() {
     return {
-      isLoading: false,
       user:{
         identifier: '',
         password: '',
@@ -92,10 +90,11 @@ export default {
   },
   methods: {
     ...mapActions('auth', ['login']),
+    ...mapActions(['setLoading']),
     async onSubmit() {
-      this.isLoading = true;
+      this.setLoading(true);
       let loginResponse = await this.login(this.user);
-      this.isLoading = false;
+      this.setLoading(false);
       if(loginResponse.success===true){
 
         this.onClose();

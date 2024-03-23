@@ -1,5 +1,4 @@
 <template>
-  <LoadingComponent :is-loading="isLoading"></LoadingComponent>
   <BasicModalComponent
       title="Créer un compte"
       :on-close="closeModal">
@@ -64,6 +63,7 @@ import UtilService from "@/services/utilService.js";
 import LoadingComponent from "@/components/game/LoadingComponent.vue";
 import LoginApiService from "@/services/api/loginApiService.js";
 import ErrorService from "@/services/errorService.js";
+import {mapActions} from "vuex";
 
 defineRule('required', required);
 defineRule('email', email);
@@ -95,7 +95,6 @@ export default {
   },
   data() {
     return {
-      isLoading: false,
       user: {
         username: '',
         firstName: '',
@@ -129,27 +128,28 @@ export default {
     }
   },
   methods:{
+    ...mapActions(['setLoading']),
     async onSubmit(){
-      this.isLoading = true;
+      this.setLoading(true);
       this.mailAvailabiltyStatus=null;
       this.usernameAvailabiltyStatus=null;
       this.mailAvailabiltyStatus =await this.checkMailAvailability();
       if(this.isMailAlreadyUsed){
-        this.isLoading = false;
+        this.setLoading(false);
         return;
       }
       this.usernameAvailabiltyStatus =await this.checkUsernameAvailability();
       if(this.isUsernameAlreadyUsed){
-        this.isLoading = false;
+        this.setLoading(false);
         return;
       }
       await this.register();
       if(this.isUserRegistered){
-        this.isLoading = false;
+        this.setLoading(false);
         await new Promise(r => setTimeout(r, this.secondsBeforeRedirect*1000));
         this.closeModal();
       }
-      this.isLoading = false;
+      this.setLoading(false);
     },
     closeModal(){
       this.onClose(this.isUserRegistered);

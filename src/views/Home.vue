@@ -1,143 +1,53 @@
 <template>
-  <LoadingComponent :is-loading="isLoading"></LoadingComponent>
-  <SignInModalComponent v-if="showSignInModal"
-      :on-close="hideSignInModal"/>
-  <SignUpModalComponent  v-if="showSignUpModal"
-                         :on-close="hideSignUpModal"
-                         :redirect-to-sign-in ="redirectToSignIn"
-                         :redirect-to-reset-password ="redirectToResetPassword"/>
-  <PasswordResetModalComponent :on-close="hidePasswordResetModal" v-if="showPasswordResetModal"/>
-  <div class="container">
-    <header class="app-bar">
+  <BasicViewComponent >
+    <template v-slot:content>
+      <h1>TEST</h1>
       <div class="row">
-        <div class="col-6">
-          <h1 class="app-title">Jeux</h1>
-        </div>
-        <div class="col-2" v-if="isLoggedIn">
-          <div class="btn btn-danger" @click="doLogOut()" ></div>
-        </div>
-        <div class="col-2" v-if="!isLoggedIn">
-          <div class="btn btn-success" @click="signIn()" >S'inscrire</div>
-        </div>
-        <div class="col-3" v-if="!isLoggedIn">
-          <div class="btn btn-success" @click="signUp()" >Se connecter</div>
+        <div class="col-12" v-if="gameContent!=null">
+          <h1>{{gameContent.name}}</h1>
         </div>
       </div>
-      <div class="row">
-        <div class="col-2 mt-2" v-for="(game, index) in gameList" :key="index">
-          <span class="btn btn-secondary" @click="loadGame(game)">{{game.name}}</span>
-        </div>
-      </div>
-    </header>
-    <div class="row">
-      <div class="col-12" v-if="gameContent!=null">
-        <h1>{{gameContent.name}}</h1>
-      </div>
-    </div>
-    <Game  v-if="!isLoading && gameContent!=null"
-           :key="gameContent.id"
-           :game-content="gameContent"
-           :main-player="mainPlayer" />
-  </div>
+      <Game  v-if="!isLoading && gameContent!=null"
+             :key="gameContent.id"
+             :game-content="gameContent"
+             :main-player="mainPlayer" />
+    </template>
+  </BasicViewComponent>
 </template>
 
 <script>
 import Game from "@/views/Game.vue";
-import gamesJson from '@/content/games.json';
+
 import { v4 as uuidv4 } from 'uuid';
-import LoadingComponent from "@/components/game/LoadingComponent.vue";
-import {mapActions, mapGetters} from "vuex";
-import SignUpModalComponent from "@/components/modal/login/SignUpModalComponent.vue";
-import SignInModalComponent from "@/components/modal/login/SignInModalComponent.vue";
-import BasicModalComponent from "@/components/modal/BasicModalComponent.vue";
-import WarningModalComponent from "@/components/modal/WarningModalComponent.vue";
-import PasswordResetModalComponent from "@/components/modal/login/PasswordResetModalComponent.vue";
+import {mapGetters} from "vuex";
+import BasicViewComponent from "@/components/BasicViewComponent.vue";
 export default {
   name: 'Home',
   components: {
-    PasswordResetModalComponent,
-    WarningModalComponent,
-    BasicModalComponent,
-    SignInModalComponent,
-    SignUpModalComponent,
-    LoadingComponent,
+    BasicViewComponent,
     Game,
   },
   data() {
     return {
-      gameList: [],
       mainPlayer :null,
       gameContent:null,
-      isLoading: false,
-      showSignUpModal: false,
-      showSignInModal: false,
-      showPasswordResetModal: true,
     }
   },
   computed: {
-    ...mapGetters(['isTestMode']),
-    ...mapGetters("auth", ["isLoggedIn", "connectedUser" ]),
+    ...mapGetters(['isTestMode', "isLoading"]),
   },
   methods: {
-    ...mapActions('auth', ['logout']),
-    loadGameListFromJson() {
-      this.gameList = gamesJson;
-    },
-    loadGame(game) {
-      this.gameContent = game;
-      this.isLoading = false;
-    },
     loadPlayer(){
       this.mainPlayer = {name: "Robert", id: uuidv4()};
     },
-    async doLogOut(){
-      this.isLoading = true;
-      await this.logout();
-      this.isLoading = false;
-    },
-    signIn(){
-      this.showSignInModal = true;
-    },
-    signUp(){
-      this.showSignUpModal = true;
-    },
-    hideSignUpModal(){
-      this.showSignUpModal = false;
-    },
-    hideSignInModal(isUserRegistered){
-      this.showSignInModal = false;
-      if(isUserRegistered){
-        this.showSignUpModal = true;
-      }
-    },
-    redirectToSignIn(){
-      this.hideSignUpModal();
-      this.showSignInModal = true;
-    },
-    redirectToResetPassword(){
-      this.hideSignUpModal();
-      this.showPasswordResetModal = true;
-    },
-    hidePasswordResetModal(){
-      this.showPasswordResetModal = false;
+    loadGame(game) {
+      this.gameContent = game;
+      this.setLoading(false);
     },
   },
   mounted() {
-    this.loadGameListFromJson();
     this.loadPlayer();
-    if(this.isTestMode){
-      this.loadGame(this.gameList[1]);
-    }
   }
 }
 
 </script>
-
-<style>
-.app-bar {
-  background-color: #2c3e50;
-  color: white;
-  padding: 10px 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-</style>

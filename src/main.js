@@ -12,7 +12,9 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 /* import the fontawesome core */
 import { library } from '@fortawesome/fontawesome-svg-core'
 
-import { faDice, faDiceOne, faDiceTwo, faDiceThree, faDiceFour, faDiceFive, faDiceSix,
+import { faDice, faDiceOne, faDiceTwo,
+    faDiceThree, faDiceFour, faDiceFive,
+    faDiceSix, faRightFromBracket,
     faCheck, faCross} from '@fortawesome/free-solid-svg-icons'
 
 /* add icons to the library */
@@ -25,6 +27,7 @@ library.add(faDiceFive)
 library.add(faDiceSix)
 library.add(faCheck)
 library.add(faCross)
+library.add(faRightFromBracket)
 
 const app = createApp(App);
 app.use(router);

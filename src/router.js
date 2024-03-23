@@ -9,7 +9,7 @@ const routes = [
     { path: '/', component: Home, name: 'Home'},
     { path: '/confirm-mail', component: MailConfirmation },
     { path: '/reset-password', component: ResetPassword },
-    { path: '/player', component: Player, meta: { requiresAuth: true } },
+    { path: '/player/:playerId', component: Player, name: 'Player', props:true, meta: { requiresAuth: true } },
 ];
 
 const router = createRouter({

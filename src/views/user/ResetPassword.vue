@@ -1,5 +1,5 @@
 <template>
-  <LoadingComponent :is-loading="isLoading"></LoadingComponent>
+  <LoadingComponent/>
   <div class="container">
     <div>
       <h1 class="text-center mb-4">Réinitialisation du mot de passe</h1>
@@ -52,7 +52,7 @@ import LoginApiService from "@/services/api/loginApiService.js";
 import {Field, defineRule, ErrorMessage, Form, configure} from 'vee-validate';
 import { required, min,confirmed } from '@vee-validate/rules';
 import ErrorService from "@/services/errorService.js";
-import {mapGetters} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 
 defineRule('required', required);
 defineRule('min', min);
@@ -76,7 +76,6 @@ export default {
   },
   data() {
     return {
-      isLoading: false,
       passwordReset : null,
       password1:null,
       password2:null,
@@ -92,8 +91,9 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['setLoading']),
     async onSubmit() {
-      this.isLoading = true;
+      this.setLoading(true);
       let token = this.$route.query.token;
       let request = {
         token: token,
@@ -109,7 +109,7 @@ export default {
           this.$router.push({name: 'Home'});
         }, this.delayAftorReset * 1000);
       }
-      this.isLoading = false;
+      this.setLoading(false);
     },
     refresh(){
       this.passwordReset = null;

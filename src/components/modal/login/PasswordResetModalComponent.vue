@@ -1,5 +1,4 @@
 <template>
-  <LoadingComponent :is-loading="isLoading"></LoadingComponent>
   <BasicModalComponent
       title="Mot de passe oublié"
       :on-close="onClose">
@@ -62,7 +61,6 @@ export default {
   },
   data() {
     return {
-      isLoading: false,
       mail : null,
       errorMessage: null,
       mailSubmitted: false,
@@ -75,11 +73,12 @@ export default {
     },
   },
   methods: {
+    ...mapActions(['setLoading']),
     async onSubmit() {
-      this.isLoading = true;
+      this.setLoading(true);
       this.mailSubmitted = true;
       let resetResponse = await this.sendResetPasswordMail({email : this.mail});
-      this.isLoading = false;
+      this.setLoading(false);
       if(resetResponse.status!==true){
         this.errorMessage = resetResponse.message;
       }

@@ -1,5 +1,5 @@
 <template>
-  <LoadingComponent :is-loading="isLoading"></LoadingComponent>
+  <LoadingComponent/>
   <div class="container">
     <div>
       <h1>Vérification de l'adresse mail</h1>
@@ -18,6 +18,7 @@
 import LoadingComponent from "@/components/game/LoadingComponent.vue";
 import LoginApiService from "@/services/api/loginApiService.js";
 import ErrorService from "@/services/errorService.js";
+import {mapActions} from "vuex";
 export default {
   name: 'MailConfirmation',
   components: {
@@ -25,11 +26,11 @@ export default {
   },
   data() {
     return {
-      isLoading: true,
       confirmation : null,
     }
   },
   methods: {
+    ...mapActions(['setLoading']),
     async confirmMail() {
       let token = this.$route.query.token;
       await LoginApiService.confirmMail(token).then((response) => {
@@ -37,7 +38,7 @@ export default {
       }).catch((error) => {
         ErrorService.showErrorInAlert(error);
       });
-      this.isLoading = false;
+      this.setLoading(false);
     }
   },
   mounted() {

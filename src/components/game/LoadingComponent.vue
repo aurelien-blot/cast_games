@@ -5,13 +5,12 @@
 </template>
 
 <script>
+import {mapGetters} from "vuex";
+
 export default {
   name: "LoadingComponent",
-  props: {
-    isLoading: {
-      type: Boolean,
-      required: true
-    }
+  computed: {
+    ...mapGetters(['isLoading'])
   }
 };
 </script>

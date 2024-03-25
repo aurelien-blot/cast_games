@@ -1,6 +1,17 @@
 <template>
   <div>
-    <h1>PlayerProfileTabComponent</h1>
+    <TabAreaComponent title="Informations générales">
+      <template v-slot:tab-area-content>
+        <div><span class="bold">Nom d'utilisateur : </span><span></span></div>
+        <div><span class="bold">Inscrit depuis le : </span><span></span></div>
+      </template>
+    </TabAreaComponent>
+
+    <TabAreaComponent title="Favoris">
+      <template v-slot:tab-area-content>
+        <div>test2</div>
+      </template>
+    </TabAreaComponent>
   </div>
 </template>
 <script>
@@ -8,9 +19,11 @@
 import {mapActions, mapGetters} from "vuex";
 import PlayerApiService from "@/services/api/playerApiService.js";
 import ErrorService from "@/services/errorService.js";
+import TabAreaComponent from "@/components/TabAreaComponent.vue";
 
 export default {
   name: 'PlayerProfileTabComponent',
+  components: {TabAreaComponent},
   props:{
     playerId: {
       type: String,

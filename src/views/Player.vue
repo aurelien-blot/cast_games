@@ -10,12 +10,14 @@
         </li>
       </ul>
       <template v-if="selectedTab!=null">
-        <PlayerProfileTabComponent v-if="selectedTab.technicalName==='profile'"
-                                   :playerId="playerId"/>
-        <PlayerSocialTabComponent v-else-if="selectedTab.technicalName==='social'"></PlayerSocialTabComponent>
-        <PlayerStatsTabComponent v-else-if="selectedTab.technicalName==='stats'"></PlayerStatsTabComponent>
-        <PlayerHistoryTabComponent v-else-if="selectedTab.technicalName==='history'"></PlayerHistoryTabComponent>
-        <PlayerSettingsTabComponent v-else-if="selectedTab.technicalName==='settings'"></PlayerSettingsTabComponent>
+        <div class="tab-content">
+          <PlayerProfileTabComponent v-if="selectedTab.technicalName==='profile'"
+                                     :playerId="playerId"/>
+          <PlayerSocialTabComponent v-else-if="selectedTab.technicalName==='social'"></PlayerSocialTabComponent>
+          <PlayerStatsTabComponent v-else-if="selectedTab.technicalName==='stats'"></PlayerStatsTabComponent>
+          <PlayerHistoryTabComponent v-else-if="selectedTab.technicalName==='history'"></PlayerHistoryTabComponent>
+          <PlayerSettingsTabComponent v-else-if="selectedTab.technicalName==='settings'"></PlayerSettingsTabComponent>
+        </div>
       </template>
     </template>
   </BasicViewComponent>

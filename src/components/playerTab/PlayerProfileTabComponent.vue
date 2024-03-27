@@ -1,17 +1,26 @@
 <template>
   <div>
-    <TabAreaComponent title="Informations générales">
-      <template v-slot:tab-area-content>
-        <div><span class="bold">Nom d'utilisateur : </span><span></span></div>
-        <div><span class="bold">Inscrit depuis le : </span><span></span></div>
-      </template>
-    </TabAreaComponent>
+    <template v-if="playerProfile==null">
+      <div class="alert alert-info">Aucun profil de joueur trouvé.</div>
+    </template>
+    <template v-else-if="playerProfile.archived">
+      <div class="alert alert-info">Ce compte a été supprimé, l'accès aux informations est donc impossible.</div>
+    </template>
+    <template v-else-if="!playerProfile.archived">
+      <TabAreaComponent title="Informations générales">
+        <template v-slot:tab-area-content>
 
-    <TabAreaComponent title="Favoris">
-      <template v-slot:tab-area-content>
-        <div>test2</div>
-      </template>
-    </TabAreaComponent>
+          <div><span class="bold">Nom d'utilisateur : </span><span></span></div>
+          <div><span class="bold">Inscrit depuis le : </span><span></span></div>
+        </template>
+      </TabAreaComponent>
+
+      <TabAreaComponent title="Favoris">
+        <template v-slot:tab-area-content>
+          <div>test2</div>
+        </template>
+      </TabAreaComponent>
+    </template>
   </div>
 </template>
 <script>
@@ -20,6 +29,7 @@ import {mapActions, mapGetters} from "vuex";
 import PlayerApiService from "@/services/api/playerApiService.js";
 import ErrorService from "@/services/errorService.js";
 import TabAreaComponent from "@/components/TabAreaComponent.vue";
+import player from "@/views/Player.vue";
 
 export default {
   name: 'PlayerProfileTabComponent',

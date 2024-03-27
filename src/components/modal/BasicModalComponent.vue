@@ -12,7 +12,8 @@
         </div>
         <div class="modal-footer">
           <slot name="footer"></slot>
-          <button type="button" class="btn btn-secondary" @click="onClose()">Fermer</button>
+          <button type="button" class="btn btn-secondary"
+                  :disabled="!canClose" @click="onClose()">Fermer</button>
         </div>
       </div>
     </div>
@@ -34,6 +35,11 @@ export default {
     customClass:{
       type: String,
       required: false
+    },
+    canClose: {
+      type: Boolean,
+      required: false,
+      default: true
     }
   }
 }

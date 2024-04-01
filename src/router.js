@@ -9,7 +9,8 @@ const routes = [
     { path: '/', component: Home, name: 'Home'},
     { path: '/confirm-mail', component: MailConfirmation },
     { path: '/reset-password', component: ResetPassword },
-    { path: '/player/:playerId', component: Player, name: 'Player', props:true, meta: { requiresAuth: true } },
+    { path: '/player/:playerId', component: Player, name: 'Player',
+        props:true, meta: { requiresAuth: true },key: (to) => String(to.params.playerId) },
 ];
 
 const router = createRouter({

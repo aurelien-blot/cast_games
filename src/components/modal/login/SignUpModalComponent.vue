@@ -108,7 +108,7 @@ export default {
   mounted() {
     if(this.isTestMode) {
       this.user = {
-        identifier: 'Coco',
+        identifier: 'Samoussa',
         password: '12345678',
       }
     }

@@ -17,5 +17,14 @@ export default class UserApiService {
         return await ApiService.post(`${UserApiService.servicePath}/delete-account`, deleteObject, token);
     }
 
+    static async updateUserMail(password, newMail) {
+        const token = store.state.auth.token;
+        let requestObject = {
+            password: password,
+            newMail : newMail
+        }
+        return await ApiService.post(`${UserApiService.servicePath}/update-mail`, requestObject, token);
+    }
+
 
 }

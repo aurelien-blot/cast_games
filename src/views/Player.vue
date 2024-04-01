@@ -10,9 +10,9 @@
         </li>
       </ul>
       <template v-if="selectedTab!=null">
-        <div class="tab-content">
+        <div class="tab-content" :key="currentPlayerId">
           <PlayerProfileTabComponent v-if="selectedTab.technicalName==='profile'"
-                                     :playerId="playerId"/>
+                                     :playerId="currentPlayerId"/>
           <PlayerSocialTabComponent v-else-if="selectedTab.technicalName==='social'"></PlayerSocialTabComponent>
           <PlayerStatsTabComponent v-else-if="selectedTab.technicalName==='stats'"></PlayerStatsTabComponent>
           <PlayerHistoryTabComponent v-else-if="selectedTab.technicalName==='history'"></PlayerHistoryTabComponent>
@@ -45,10 +45,22 @@ export default {
   props: ['playerId'],
   data() {
     return {
+      currentPlayerId: this.playerId,
       player: null,
       tabList :[],
       selectedTab: null,
       isPlayerConnectedPage: false,
+    }
+  },
+  watch: {
+    /*'$route'(to, from) {
+      if(to.params.playerId !== from.params.playerId) {
+        this.initPlayer(to.params.playerId);
+      }
+    },*/
+    playerId(newVal) {
+      this.currentPlayerId = newVal;
+      this.initTabs();
     }
   },
   computed: {
@@ -56,8 +68,12 @@ export default {
     ...mapGetters("auth", ["connectedUser"]),
   },
   methods: {
+    /*initPlayer(playerId) {
+      this.playerId = playerId;
+      this.initTabs();
+    },*/
     initTabs(){
-      if(this.playerId === this.connectedUser.playerId.toString()) {
+      if(this.currentPlayerId === this.connectedUser.playerId.toString()) {
         this.isPlayerConnectedPage = true;
         this.tabList = [
           {name: "Profil", technicalName: "profile"},

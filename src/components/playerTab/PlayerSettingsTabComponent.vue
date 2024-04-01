@@ -27,6 +27,9 @@
       </template>
     </template>
   </DeleteModalComponent>
+  <PasswordResetModalComponent :on-close="hidePasswordResetModal" v-if="showPasswordResetModal"
+                               :is-connected-user="true"/>
+  <MailUpdateModalComponent :on-close="hideMailUpdateModal" v-if="showMailUpdateModal"/>
   <div>
     <TabAreaComponent title="Préférences">
       <template v-slot:tab-area-content>
@@ -38,6 +41,14 @@
         <div class="col-12 text-danger">
           <span class="bold">Suppression du compte</span>
           <button class="btn btn-sm btn-danger fa-pull-right" @click="deleteAccount">Supprimer</button>
+        </div>
+        <div class="col-12 mt-3">
+          <span class="bold">Modification du mot de passe :</span>
+          <button class="btn btn-sm btn-primary fa-pull-right" @click="resetPassword">Modifier</button>
+        </div>
+        <div class="col-12 mt-3">
+          <span class="bold">Modification de l'adresse mail :</span>
+          <button class="btn btn-sm btn-primary fa-pull-right" @click="updateMail">Modifier</button>
         </div>
       </template>
     </TabAreaComponent>
@@ -57,6 +68,8 @@ import DeleteModalComponent from "@/components/modal/DeleteModalComponent.vue";
 import {required} from "@vee-validate/rules";
 import UserApiService from "@/services/api/userApiService.js";
 import ErrorService from "@/services/errorService.js";
+import MailUpdateModalComponent from "@/components/modal/player/MailUpdateModalComponent.vue";
+import PasswordResetModalComponent from "@/components/modal/login/PasswordResetModalComponent.vue";
 
 defineRule('required', required);
 
@@ -71,11 +84,15 @@ configure({
 });
 export default {
   name: 'PlayerSettingsTabComponent',
-  components: {ErrorMessage, Field, DeleteModalComponent,Form, TabAreaComponent},
+  components: {
+    PasswordResetModalComponent,
+    MailUpdateModalComponent, ErrorMessage, Field, DeleteModalComponent,Form, TabAreaComponent},
   props: ['playerId'],
   data() {
     return {
       showDeleteAccountModal: false,
+      showPasswordResetModal: false,
+      showMailUpdateModal: false,
       deleteAccountResponse: null,
       deletePassword: null,
       delayAfterDeleteAccount : 5,
@@ -115,6 +132,18 @@ export default {
       this.deletePassword = null;
       this.deleteAccountResponse = null;
       this.showDeleteAccountModal = false;
+    },
+    resetPassword() {
+      this.showPasswordResetModal=true;
+    },
+    hidePasswordResetModal() {
+      this.showPasswordResetModal=false;
+    },
+    updateMail() {
+      this.showMailUpdateModal=true;
+    },
+    hideMailUpdateModal() {
+      this.showMailUpdateModal=false;
     }
   },
   mounted() {

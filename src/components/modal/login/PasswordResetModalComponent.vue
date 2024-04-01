@@ -1,6 +1,6 @@
 <template>
   <BasicModalComponent
-      title="Mot de passe oublié"
+      title="Réinitialisation du mot de passe"
       :on-close="onClose">
     <template v-slot:body >
       <div class="alert alert-danger" v-if="errorMessage!=null">
@@ -9,7 +9,7 @@
       <Form novalidate @submit.prevent="onSubmit" v-if="mailSubmitted===false">
         <div class="mb-3">
           <label for="email" class="form-label">Adresse email</label>
-          <Field name="email" type="email" class="form-control"  v-model="mail"
+          <Field name="email" type="email" class="form-control"  v-model="mail" :disabled="isConnectedUser"
                  id="email" rules="required|email" label="Adresse email"/>
           <ErrorMessage name="email" class="text-danger" />
         </div>
@@ -58,6 +58,11 @@ export default {
       type: Function,
       required: true
     },
+    isConnectedUser: {
+      type: Boolean,
+      required: false,
+      default: false
+    }
   },
   data() {
     return {
@@ -68,6 +73,7 @@ export default {
   },
   computed: {
     ...mapGetters(['isTestMode']),
+    ...mapGetters("auth", ["connectedUser"]),
     canSubmit() {
       return this.mail !=null && this.mail.length > 3 && UtilService.isEmail(this.mail);
     },
@@ -88,7 +94,10 @@ export default {
     }
   },
   mounted() {
-    if(this.isTestMode) {
+    if(this.isConnectedUser===true){
+      this.mail = this.connectedUser.email;
+    }
+    if(this.isConnectedUser!==true && this.isTestMode) {
       this.mail="ch07@hotmail.fr"
     }
   }

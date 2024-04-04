@@ -5,7 +5,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">{{title}}</h5>
-          <button type="button" class="btn-close" @click="onClose()"></button>
+          <button type="button" class="btn-close" :disabled="!canClose" @click="onClose()"></button>
         </div>
         <div class="modal-body">
           <slot name="body"></slot>

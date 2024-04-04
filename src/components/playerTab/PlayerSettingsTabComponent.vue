@@ -1,9 +1,9 @@
 <template>
   <DeleteModalComponent v-if="showDeleteAccountModal"
       title="Suppression du compte"
-      :canDelete="canDeleteAccount"
-      :on-deleted-account="onDeleteAccount"
-        :can-close="canCloseDeleteAccountModal"
+      :canDelete="canDeleteAccount && canCloseDeleteAccountModal"
+      :on-delete="onDeleteAccount"
+      :can-close="canCloseDeleteAccountModalFromResponse && canCloseDeleteAccountModal"
       :on-close="hideDeleteAccountModal"  >
     <template v-slot:modalContent>
       <template v-if="deleteAccountResponse!=null && deleteAccountResponse.status===true">
@@ -96,20 +96,22 @@ export default {
       deleteAccountResponse: null,
       deletePassword: null,
       delayAfterDeleteAccount : 5,
+      canCloseDeleteAccountModal: true,
     }
   },
   computed: {
     ...mapGetters(['isTestMode', "isLoading"]),
     ...mapGetters("auth", ["connectedUser"]),
-    canCloseDeleteAccountModal(){
+    canCloseDeleteAccountModalFromResponse(){
       return this.deleteAccountResponse==null || this.deleteAccountResponse.status!==true;
     },
     canDeleteAccount(){
-      return this.canCloseDeleteAccountModal && this.deletePassword!=null && this.deletePassword!=='';
+      return this.canCloseDeleteAccountModalFromResponse && this.deletePassword!=null && this.deletePassword!=='';
     }
   },
   methods: {
     ...mapActions(["setLoading"]),
+    ...mapActions('auth', ['logout']),
     deleteAccount() {
       this.showDeleteAccountModal = true;
     },
@@ -125,6 +127,12 @@ export default {
         setTimeout(() => {
           this.$store.dispatch("auth/logout");
           this.$router.push({name: 'Home'});
+        }, this.delayAfterDeleteAccount*1000);
+      }
+      else if(this.deleteAccountResponse.code===403){
+        this.canCloseDeleteAccountModal = false;
+        setTimeout(() => {
+          this.logout();
         }, this.delayAfterDeleteAccount*1000);
       }
     },

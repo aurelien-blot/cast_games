@@ -8,7 +8,7 @@
     </template>
     <template v-slot:footer>
       <button type="button" class="btn btn-danger"
-              :disabled="!canDelete" @click="onDelete">Supprimer</button>
+              :disabled="!canDelete" @click="deleteItem">Supprimer</button>
     </template>
   </BasicModalComponent>
 </template>
@@ -22,7 +22,7 @@ export default {
       type: Function,
       required: true
     },
-    onDeletedAccount: {
+    onDelete: {
       type: Function,
       required: true
     },
@@ -47,8 +47,8 @@ export default {
     }
   },
   methods: {
-    onDelete() {
-      this.onDeletedAccount();
+    deleteItem() {
+      this.onDelete();
     }
   },
 }

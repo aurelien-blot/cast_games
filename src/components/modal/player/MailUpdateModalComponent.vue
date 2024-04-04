@@ -1,6 +1,7 @@
 <template>
   <BasicModalComponent
       title="Modification de l'adresse mail"
+      :can-close="canClose"
       :on-close="onClose">
     <template v-slot:body >
       <template v-if="updateResponse!==null">
@@ -31,7 +32,7 @@
     <template v-slot:footer>
       <button v-if="updateResponse===null || updateResponse.status!==true"
               type="button" class="btn btn-primary"
-              :disabled="!canSubmit" @click="onSubmit()">Réinitialiser</button>
+              :disabled="!canSubmit || !canClose" @click="onSubmit()">Réinitialiser</button>
     </template>
   </BasicModalComponent>
 </template>
@@ -73,6 +74,7 @@ export default {
       userNewMail : null,
       updateResponse: null,
       delayBeforeClose: 7,
+      canClose: true,
     }
   },
   computed: {
@@ -82,6 +84,7 @@ export default {
   },
   methods: {
     ...mapActions(['setLoading']),
+    ...mapActions('auth', ['logout']),
     async onSubmit() {
       this.setLoading(true);
       this.updateResponse = null;
@@ -91,6 +94,12 @@ export default {
         if(this.updateResponse.status===true){
           setTimeout(() => {
             this.onClose();
+          }, this.delayBeforeClose*1000);
+        }
+        else if(this.updateResponse.code===403){
+          this.canClose = false;
+          setTimeout(() => {
+            this.logout();
           }, this.delayBeforeClose*1000);
         }
       }).catch((error) => {

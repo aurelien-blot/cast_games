@@ -30,5 +30,11 @@ export default class PlayerApiService {
         return await ApiService.get(`${PlayerApiService.servicePath}/settings/${playerId}`, token);
     }
 
+    //TODO VOIR SI ENCORE BESOIN
+    static async searchPlayer(playerName) {
+        const token = store.state.auth.token;
+        return await ApiService.post(`${PlayerApiService.servicePath}/search/${playerName}`, token);
+    }
+
 
 }

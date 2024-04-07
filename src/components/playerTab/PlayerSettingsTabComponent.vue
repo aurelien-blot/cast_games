@@ -100,7 +100,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['isTestMode', "isLoading"]),
+    ...mapGetters(['isTestMode']),
     ...mapGetters("auth", ["connectedUser"]),
     canCloseDeleteAccountModalFromResponse(){
       return this.deleteAccountResponse==null || this.deleteAccountResponse.status!==true;

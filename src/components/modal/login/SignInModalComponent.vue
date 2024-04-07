@@ -10,7 +10,7 @@
       <div class="alert alert-success" v-if="isUserRegistered">
         <span >Le compte a bien été créé, vous allez être redirigé vers la fenêtre de connexion</span>
       </div>
-      <Form novalidate @submit.prevent="onSubmit">
+      <Form novalidate @submit.prevent="onSubmit"  v-if="!isUserRegistered">
         <div class="mb-3">
           <label for="username" class="form-label">Nom d'utilisateur</label>
           <Field name="username" type="text" v-model="user.username"

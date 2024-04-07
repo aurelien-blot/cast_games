@@ -13,7 +13,7 @@
         <div class="tab-content" :key="currentPlayerId">
           <PlayerProfileTabComponent v-if="selectedTab.technicalName==='profile'"
                                      :playerId="currentPlayerId"/>
-          <PlayerSocialTabComponent v-else-if="selectedTab.technicalName==='social'"></PlayerSocialTabComponent>
+          <PlayerSocialTabComponent v-else-if="selectedTab.technicalName==='social'" :playerId="currentPlayerId"/>
           <PlayerStatsTabComponent v-else-if="selectedTab.technicalName==='stats'"></PlayerStatsTabComponent>
           <PlayerHistoryTabComponent v-else-if="selectedTab.technicalName==='history'"></PlayerHistoryTabComponent>
           <PlayerSettingsTabComponent v-else-if="selectedTab.technicalName==='settings'"></PlayerSettingsTabComponent>
@@ -64,7 +64,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['isTestMode', "isLoading"]),
+    ...mapGetters(['isTestMode']),
     ...mapGetters("auth", ["connectedUser"]),
   },
   methods: {

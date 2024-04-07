@@ -31,7 +31,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['isTestMode', "isLoading"]),
+    ...mapGetters(['isTestMode']),
     ...mapGetters("auth", ["connectedUser"]),
   },
   methods: {

@@ -49,7 +49,7 @@ export default {
     onClose: {
       type: Function,
       required: true
-    },
+    }
   },
   data() {
     return {
@@ -77,7 +77,6 @@ export default {
     async searchPlayer(){
       await ContactApiService.searchNewContact(this.playerName).then((response) => {
         this.optionList = response;
-        console.log(this.optionList)
         if(response.length===1){
           this.playerSelected = response[0];
         }
@@ -90,6 +89,9 @@ export default {
       this.addResponse = null;
       await ContactApiService.requestFriend(this.playerSelected.id).then((response) => {
         this.addResponse = response;
+        if(this.addResponse.status===true) {
+          this.$emit('update:isFriendAdded', true);
+        }
         this.setLoading(false);
       }).catch((error) => {
         ErrorService.showErrorInAlert(error);

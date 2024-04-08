@@ -1,5 +1,7 @@
 <template>
-  <add-friend-modal-component :on-close="hideAddFriendModal" v-if="showAddFriendModal"/>
+  <add-friend-modal-component v-if="showAddFriendModal"
+                              :on-close="hideAddFriendModal"
+                              @update:isFriendAdded="value => isFriendAdded = value"/>
   <div>
     <TabAreaComponent title="Demande(s) d'ami(s)" v-if="showFriendRequestArea===true">
       <template v-slot:tab-area-content>
@@ -77,6 +79,7 @@ export default {
     return {
       playerSocial: null,
       showAddFriendModal: false,
+      isFriendAdded: false
     }
   },
   computed: {
@@ -102,8 +105,13 @@ export default {
     openAddFriendModal(){
       this.showAddFriendModal = true;
     },
-    hideAddFriendModal(){
+    async hideAddFriendModal(){
+      if(this.isFriendAdded){
+        await this.loadPlayerSocial();
+        this.isFriendAdded = false;
+      }
       this.showAddFriendModal = false;
+      //loadPlayerSocial
     },
     acceptFriendRequest(requestId){
       console.log("Accept request : "+requestId);

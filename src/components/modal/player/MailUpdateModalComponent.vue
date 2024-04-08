@@ -103,7 +103,7 @@ export default {
           }, this.delayBeforeClose*1000);
         }
       }).catch((error) => {
-        this.errorMessage = ErrorService.showErrorInAlert(error);
+        ErrorService.showErrorInAlert(error);
       });
     },
   },

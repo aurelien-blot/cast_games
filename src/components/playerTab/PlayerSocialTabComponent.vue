@@ -65,6 +65,7 @@ import TabAreaComponent from "@/components/TabAreaComponent.vue";
 import ErrorService from "@/services/errorService.js";
 import AddFriendModalComponent from "@/components/modal/player/AddFriendModalComponent.vue";
 import PlayerApiService from "@/services/api/playerApiService.js";
+import ContactApiService from "@/services/api/contactApiService.js";
 
 export default {
   name: 'PlayerSocialTabComponent',
@@ -79,7 +80,9 @@ export default {
     return {
       playerSocial: null,
       showAddFriendModal: false,
-      isFriendAdded: false
+      isFriendAdded: false,
+      addFriendResponse : null,
+      rejectFriendResponse : null,
     }
   },
   computed: {
@@ -113,11 +116,23 @@ export default {
       this.showAddFriendModal = false;
       //loadPlayerSocial
     },
-    acceptFriendRequest(requestId){
-      console.log("Accept request : "+requestId);
+    async acceptFriendRequest(requestId){
+      this.setLoading(true);
+      await ContactApiService.acceptContact(requestId).then((result) => {
+        this.addFriendResponse =result;
+      }).catch((error) => {
+        ErrorService.showErrorInAlert(error);
+      });
+      this.setLoading(false);
     },
-    rejectFriendRequest(requestId){
-      console.log("Reject request : "+requestId);
+    async rejectFriendRequest(requestId){
+      this.setLoading(true);
+      await ContactApiService.rejectContact(requestId).then((result) => {
+        this.rejectFriendResponse =result;
+      }).catch((error) => {
+        ErrorService.showErrorInAlert(error);
+      });
+      this.setLoading(false);
     },
     blockContact(contactId){
       console.log("Block contact : "+contactId);

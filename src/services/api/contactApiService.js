@@ -14,4 +14,16 @@ export default class ContactApiService {
         const token = store.state.auth.token;
         return await ApiService.post(`${ContactApiService.servicePath}/search/new/${playerName}`, token);
     }
+
+    static async acceptContact(id){
+        const token = store.state.auth.token;
+        return await ApiService.post(`${ContactApiService.servicePath}/accept/${id}`, token);
+    }
+
+    static async rejectContact(id){
+        const token = store.state.auth.token;
+        return await ApiService.post(`${ContactApiService.servicePath}/reject/${id}`, token);
+    }
+
+
 }

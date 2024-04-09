@@ -37,7 +37,7 @@
 
 <script >
 import BasicModalComponent from "@/components/modal/BasicModalComponent.vue";
-import LoadingComponent from "@/components/game/LoadingComponent.vue";
+import LoadingComponent from "@/components/util/LoadingComponent.vue";
 import {mapActions, mapGetters} from "vuex";
 import ErrorService from "@/services/errorService.js";
 import ContactApiService from "@/services/api/contactApiService.js";

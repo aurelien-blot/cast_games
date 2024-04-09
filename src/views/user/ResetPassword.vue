@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import LoadingComponent from "@/components/game/LoadingComponent.vue";
+import LoadingComponent from "@/components/util/LoadingComponent.vue";
 import LoginApiService from "@/services/api/loginApiService.js";
 import {Field, defineRule, ErrorMessage, Form, configure} from 'vee-validate';
 import { required, min,confirmed } from '@vee-validate/rules';

@@ -25,7 +25,7 @@ import WarningModalComponent from "@/components/modal/WarningModalComponent.vue"
 import BasicModalComponent from "@/components/modal/BasicModalComponent.vue";
 import SignInModalComponent from "@/components/modal/login/SignInModalComponent.vue";
 import SignUpModalComponent from "@/components/modal/login/SignUpModalComponent.vue";
-import LoadingComponent from "@/components/game/LoadingComponent.vue";
+import LoadingComponent from "@/components/util/LoadingComponent.vue";
 
 export default {
   name: 'BasicViewComponent',

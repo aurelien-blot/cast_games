@@ -60,7 +60,7 @@ import BasicModalComponent from "@/components/modal/BasicModalComponent.vue";
 import {Field, defineRule, ErrorMessage, Form, configure} from 'vee-validate';
 import { required, email, min,alpha, alpha_num } from '@vee-validate/rules';
 import UtilService from "@/services/utilService.js";
-import LoadingComponent from "@/components/game/LoadingComponent.vue";
+import LoadingComponent from "@/components/util/LoadingComponent.vue";
 import LoginApiService from "@/services/api/loginApiService.js";
 import ErrorService from "@/services/errorService.js";
 import {mapActions} from "vuex";

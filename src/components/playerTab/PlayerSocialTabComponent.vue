@@ -83,6 +83,8 @@ export default {
       isFriendAdded: false,
       addFriendResponse : null,
       rejectFriendResponse : null,
+      blockContactResponse : null,
+      unBlockContactResponse : null,
     }
   },
   computed: {
@@ -134,11 +136,23 @@ export default {
       });
       this.setLoading(false);
     },
-    blockContact(contactId){
-      console.log("Block contact : "+contactId);
+    async blockContact(contactId){
+      this.setLoading(true);
+      await ContactApiService.blockContact(contactId).then((result) => {
+        this.blockContactResponse =result;
+      }).catch((error) => {
+        ErrorService.showErrorInAlert(error);
+      });
+      this.setLoading(false);
     },
-    unBlockContact(contactId){
-      console.log("Unblock contact : "+contactId);
+    async unBlockContact(contactId){
+      this.setLoading(true);
+      await ContactApiService.unblockContact(contactId).then((result) => {
+        this.unBlockContactResponse =result;
+      }).catch((error) => {
+        ErrorService.showErrorInAlert(error);
+      });
+      this.setLoading(false);
     }
 
   },

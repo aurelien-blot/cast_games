@@ -25,5 +25,15 @@ export default class ContactApiService {
         return await ApiService.post(`${ContactApiService.servicePath}/reject/${id}`, token);
     }
 
+    static async blockContact(id){
+        const token = store.state.auth.token;
+        return await ApiService.post(`${ContactApiService.servicePath}/block/${id}`, token);
+    }
+
+    static async unblockContact(id){
+        const token = store.state.auth.token;
+        return await ApiService.post(`${ContactApiService.servicePath}/unblock/${id}`, token);
+    }
+
 
 }

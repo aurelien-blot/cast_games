@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import LoadingComponent from "@/components/game/LoadingComponent.vue";
+import LoadingComponent from "@/components/util/LoadingComponent.vue";
 import LoginApiService from "@/services/api/loginApiService.js";
 import ErrorService from "@/services/errorService.js";
 import {mapActions} from "vuex";

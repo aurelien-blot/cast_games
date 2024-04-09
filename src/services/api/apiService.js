@@ -23,6 +23,26 @@ export default class ApiService {
         }
     }
 
+    static async put(endpoint, body) {
+        let headers = ApiService.extractHeaders();
+        try {
+            const response = await axios.put(`${ApiService.baseUrl}${endpoint}`, body, {headers});
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    static async delete(endpoint) {
+        let headers = ApiService.extractHeaders();
+        try {
+            const response = await axios.delete(`${ApiService.baseUrl}${endpoint}`, {headers});
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
     static extractHeaders() {
         const token = localStorage.getItem('token');
         const headers = {};

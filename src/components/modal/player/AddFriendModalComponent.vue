@@ -13,8 +13,8 @@
       </template>
       <template v-if="addResponse===null || addResponse.status!==true">
         <div class="mb-3" v-if="playerSelected===null">
-          <label for="playerName" class="form-label">Nom du joueur</label>
-          <input class="form-control" list="players-list" id="optionListSelect" placeholder="Entre le pseudo de ton contact" v-model="playerName">
+          <label for="playerName" class="form-label">Nom du joueur ou adresse mail</label>
+          <input class="form-control" list="players-list" id="optionListSelect" placeholder="Entre le pseudo ou l'adresse mail de ton contact" v-model="playerName">
           <datalist id="players-list">
             <option v-for="player in optionList" :value="player.username" :key="player.id"></option>
           </datalist>
@@ -41,6 +41,7 @@ import LoadingComponent from "@/components/util/LoadingComponent.vue";
 import {mapActions, mapGetters} from "vuex";
 import ErrorService from "@/services/errorService.js";
 import ContactApiService from "@/services/api/contactApiService.js";
+import UtilService from "@/services/utilService.js";
 
 export default {
   name: 'AddFriendModalComponent',
@@ -54,6 +55,7 @@ export default {
   data() {
     return {
       playerName : null,
+      playerMail : null,
       playerSelected : null,
       optionList: [],
       addResponse: null,
@@ -63,13 +65,18 @@ export default {
   watch: {
     playerName(value, oldValue) {
       if(value !== oldValue && value!=null && value.length>3){
-        this.searchPlayerDebounced();
+        this.playerMail = null;
+        if(UtilService.isEmail(value)===true) {
+          this.playerMail = value;
+        } else {
+          this.searchPlayerDebounced();
+        }
       }
     },
   },
   computed: {
     canSubmit() {
-      return this.playerSelected !=null;
+      return this.playerSelected !=null || this.playerMail!=null;
     },
   },
   methods: {
@@ -87,15 +94,30 @@ export default {
     async onSubmit() {
       this.setLoading(true);
       this.addResponse = null;
-      await ContactApiService.requestFriend(this.playerSelected.id).then((response) => {
-        this.addResponse = response;
-        if(this.addResponse.status===true) {
-          this.$emit('update:isFriendAdded', true);
-        }
-        this.setLoading(false);
-      }).catch((error) => {
-        ErrorService.showErrorInAlert(error);
-      });
+      if(this.playerMail!=null){
+        await ContactApiService.requestFriendByEmail(this.playerMail).then((response) => {
+          this.addResponse = response;
+          if(this.addResponse.status===true) {
+            this.$emit('update:isFriendAdded', true);
+          }
+          this.setLoading(false);
+        }).catch((error) => {
+          ErrorService.showErrorInAlert(error);
+        });
+        return;
+      }
+      else{
+        await ContactApiService.requestFriend(this.playerSelected.id).then((response) => {
+          this.addResponse = response;
+          if(this.addResponse.status===true) {
+            this.$emit('update:isFriendAdded', true);
+          }
+          this.setLoading(false);
+        }).catch((error) => {
+          ErrorService.showErrorInAlert(error);
+        });
+      }
+
     },
     searchPlayerDebounced() {
       this.optionList = [];

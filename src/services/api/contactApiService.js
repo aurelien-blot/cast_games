@@ -9,6 +9,10 @@ export default class ContactApiService {
         const token = store.state.auth.token;
         return await ApiService.post(`${ContactApiService.servicePath}/request/${playerId}`, token);
     }
+    static async requestFriendByEmail(playerMail) {
+        const token = store.state.auth.token;
+        return await ApiService.post(`${ContactApiService.servicePath}/request/mail/${playerMail}`, token);
+    }
 
     static async searchNewContact(playerName) {
         const token = store.state.auth.token;
@@ -35,5 +39,9 @@ export default class ContactApiService {
         return await ApiService.post(`${ContactApiService.servicePath}/unblock/${id}`, token);
     }
 
+    static async deleteContact(id){
+        const token = store.state.auth.token;
+        return await ApiService.delete(`${ContactApiService.servicePath}/${id}`, token);
+    }
 
 }

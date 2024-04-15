@@ -1,6 +1,7 @@
 
 <template>
   <LoadingComponent/>
+
   <SignInModalComponent v-if="showSignInModal"
                         :on-close="hideSignInModal"/>
   <SignUpModalComponent  v-if="showSignUpModal"
@@ -13,6 +14,7 @@
                       :sign-in="signIn" :sign-up="signUp" :logout="doLogOut"
     />
     <slot name="content"></slot>
+    <MessageAreaComponent v-if="isLoggedIn"/>
   </div>
 </template>
 
@@ -26,10 +28,12 @@ import BasicModalComponent from "@/components/modal/BasicModalComponent.vue";
 import SignInModalComponent from "@/components/modal/login/SignInModalComponent.vue";
 import SignUpModalComponent from "@/components/modal/login/SignUpModalComponent.vue";
 import LoadingComponent from "@/components/util/LoadingComponent.vue";
+import MessageAreaComponent from "@/components/message/MessageAreaComponent.vue";
 
 export default {
   name: 'BasicViewComponent',
   components: {
+    MessageAreaComponent,
     AppBarComponent,
     PasswordResetModalComponent,
     WarningModalComponent,
@@ -48,6 +52,8 @@ export default {
   },
   computed: {
     ...mapGetters(['isTestMode']),
+    ...mapGetters("auth", ["isLoggedIn"]),
+
   },
   methods: {
     ...mapActions('auth', ['logout']),

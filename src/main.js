@@ -15,6 +15,7 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { faDice, faDiceOne, faDiceTwo,
     faDiceThree, faDiceFour, faDiceFive,
     faDiceSix, faRightFromBracket, faChevronUp, faChevronDown,
+    faPenToSquare,
     faCheck, faCross} from '@fortawesome/free-solid-svg-icons'
 
 /* add icons to the library */
@@ -30,6 +31,7 @@ library.add(faCross)
 library.add(faChevronUp)
 library.add(faChevronDown)
 library.add(faRightFromBracket)
+library.add(faPenToSquare)
 
 const app = createApp(App);
 app.use(router);

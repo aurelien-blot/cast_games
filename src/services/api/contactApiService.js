@@ -44,4 +44,9 @@ export default class ContactApiService {
         return await ApiService.delete(`${ContactApiService.servicePath}/${id}`, token);
     }
 
+    static async getActiveContacts(){
+        const token = store.state.auth.token;
+        return await ApiService.get(`${ContactApiService.servicePath}/active`, token);
+    }
+
 }

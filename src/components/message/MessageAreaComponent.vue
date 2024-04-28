@@ -62,7 +62,9 @@
       </div>
     </div>
     <div class="conversation-list" v-if="!isListAreaCollapsed">
-      <div v-for="conversation in conversations" :key="conversation.id" class="conversation">
+      <div v-for="(conversation, index) in conversations" :key="conversation.id"
+           class="conversation hover" @click="selectConversation(index)"
+      >
         {{ conversation.name }}
       </div>
     </div>
@@ -135,9 +137,6 @@ export default {
       this.activeConversation = null;
     },
     async sendMessage(){
-      await this.initPlayerConversationList()
-      return;
-
       if(this.canSendMessage){
         await this.setLoading(true);
         let conversation = this.formatConversation();
@@ -170,15 +169,17 @@ export default {
     prepareConversationList(data){
       this.conversations = data;
       console.log('conversations', this.conversations);
-
     },
-    async updatePlayerConversationList(){
+    selectConversation(index){
+      this.activeConversation = this.conversations[index];
+    },
+    /*async updatePlayerConversationList(){
       await this.setLoading(true);
       await ConversationApiService.requestConversationList().catch((error) => {
         ErrorService.showErrorInAlert(error);
       });
       await this.setLoading(false);
-    },
+    },*/
   },
   async mounted() {
     await this.connectToMessageExchangeService();

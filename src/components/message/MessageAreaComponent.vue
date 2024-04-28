@@ -76,17 +76,18 @@ import ErrorService from "@/services/errorService.js";
 import ContactApiService from "@/services/api/contactApiService.js";
 import MessageApiService from "@/services/api/messageApiService.js";
 import ConversationApiService from "@/services/api/conversationApiService.js";
+import MessageExchangeService from "@/services/messages/messageExchangeService.js";
 export default {
   name: 'MessageAreaComponent',
   props: {
   },
   data() {
     return {
-      isListAreaCollapsed: true,
+      isListAreaCollapsed: false,
       activeConversation: null,
       conversations: [],
       playerContacts: [],
-      newMessageContent: null
+      newMessageContent: null,
     };
   },
   computed: {
@@ -134,6 +135,8 @@ export default {
       this.activeConversation = null;
     },
     async sendMessage(){
+      await this.initPlayerConversationList()
+      return;
 
       if(this.canSendMessage){
         await this.setLoading(true);
@@ -161,23 +164,34 @@ export default {
     resetNewMessage(){
       this.newMessageContent = null;
     },
-    async initPlayerConversationList(){
+    async connectToMessageExchangeService(){
+      MessageExchangeService.connect(this.prepareConversationList);
+    },
+    prepareConversationList(data){
+      this.conversations = data;
+      console.log('conversations', this.conversations);
+
+    },
+    async updatePlayerConversationList(){
       await this.setLoading(true);
       await ConversationApiService.requestConversationList().catch((error) => {
         ErrorService.showErrorInAlert(error);
       });
       await this.setLoading(false);
-    }
+    },
   },
   async mounted() {
+    await this.connectToMessageExchangeService();
     if(this.isTestMode){
       await this.createNewConversation();
       this.activeConversation.members.push(this.playerContacts[1]);
       this.activeConversation.members.push(this.playerContacts[2]);
       this.newMessageContent = 'Test message group';
     }
-    await this.initPlayerConversationList();
-  }
+  },
+  beforeDestroy() {
+    MessageExchangeService.close();
+  },
 }
 
 </script>

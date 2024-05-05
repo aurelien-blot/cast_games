@@ -11,19 +11,18 @@ export default class SseService {
         this.eventSource = null;
     }
 
-    connect(callback) {
+    connect(onInitConversation, onUpdateConversation) {
         const connectedPlayerId = store.state.auth.user.playerId;
         this.eventSource = new EventSource(`${SseService.URL_BASE_SSE}/${connectedPlayerId}`);
         this.eventSource.onopen = () => {
-            //console.log('SSE opened');
         };
         this.eventSource.addEventListener(SseService.INIT_CONVERSATIONS, event => {
-            const data = JSON.parse(event.data);
-            callback(data);
+            const conversationList = JSON.parse(event.data);
+            onInitConversation(conversationList);
         });
         this.eventSource.addEventListener(SseService.UPDATE_CONVERSATIONS, event => {
-            const data = JSON.parse(event.data);
-            callback(data);
+            const updatedConversation = JSON.parse(event.data);
+            onUpdateConversation(updatedConversation);
         });
         this.eventSource.onerror = error => {
             if (this.eventSource.readyState !== EventSource.CLOSED) {

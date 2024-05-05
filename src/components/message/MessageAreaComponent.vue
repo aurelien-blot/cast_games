@@ -1,76 +1,13 @@
 <template>
-  <div class="messenger-container message-area" v-if="showConversationArea">
-    <div class="row hover" >
-      <div class="col-9 offset-1" >{{activeConversationName}}</div>
-      <div class="col-1 " @click="closeConversation">
-        <font-awesome-icon icon="fa-solid fa-xmark" />
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-10 offset-1">
-        <div class="row" >
-          <div class="col-12">
-            <v-autocomplete
-                v-model="activeConversation.members"
-                label="Ajouter des membres à la conversation"
-                clearable
-                multiple
-                variant="outlined"
-                color="blue-grey-lighten-2"
-                item-title="username"
-                :item-value="item => item"
-                chips
-                closable-chips
-                :items="playerContacts"
-                clear-icon="fa fa-times-circle"
-                :append-outer-icon="'fa fa-user-plus'"
-            ></v-autocomplete>
-          </div>
-        </div>
-        <div class="row" v-if="isNewConversation!==true">
-          <div class="col-11 offset-1">
-            <div class="message-list">
-              <div class="message" v-for="message in activeConversation.messages" :key="message.id">
-                {{ message.content }}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-10">
-            <textarea placeholder="Entrez votre message" v-model="newMessageContent"/>
-          </div>
-          <div class="col-1">
-            <button class="btn btn-primary" @click="sendMessage" :disabled="!canSendMessage">
-              <font-awesome-icon icon="fa-solid fa-paper-plane" />
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <conversation-component :active-conversation="activeConversation"
+                          :close-conversation="closeConversation"
+                          :player-contacts="playerContacts"
+      ref="conversationComponent"/>
 
-  <div class="messenger-container message-list-area" :class="{ 'is-collapsed': isListAreaCollapsed }">
-    <div class="row hover" >
-      <div class="col-8 offset-1" @click="toggleListAreaCollapse">{{connectedUser.username}}</div>
-      <div class="col-1" @click="createNewConversation">
-        <font-awesome-icon icon="fa-solid fa-pen-to-square" />
-      </div>
-      <div class="col-1" @click="toggleListAreaCollapse">
-        <font-awesome-icon v-if="isListAreaCollapsed" icon="fa-solid fa-chevron-up" />
-        <font-awesome-icon v-else icon="fa-solid fa-chevron-down" />
-      </div>
-    </div>
-    <div class="conversation-list" v-if="!isListAreaCollapsed">
-      <div v-for="(conversation, index) in conversations" :key="conversation.id"
-           class="conversation hover" @click="selectConversation(index)"
-      >
-        {{ conversation.name }}
-      </div>
-    </div>
-  </div>
+  <conversation-list-component :create-conversation="createConversation"
+                               :select-conversation="selectConversation"
+                               :conversations="conversations"/>
 </template>
-
 
 <script>
 import {mapActions, mapGetters} from "vuex";
@@ -79,36 +16,21 @@ import ContactApiService from "@/services/api/contactApiService.js";
 import MessageApiService from "@/services/api/messageApiService.js";
 import ConversationApiService from "@/services/api/conversationApiService.js";
 import MessageExchangeService from "@/services/messages/messageExchangeService.js";
+import ConversationListComponent from "@/components/message/ConversationListComponent.vue";
+import ConversationComponent from "@/components/message/ConversationComponent.vue";
 export default {
   name: 'MessageAreaComponent',
-  props: {
-  },
+  components: {ConversationComponent, ConversationListComponent},
   data() {
     return {
       isListAreaCollapsed: false,
       activeConversation: null,
       conversations: [],
       playerContacts: [],
-      newMessageContent: null,
     };
   },
   computed: {
-    ...mapGetters("auth", ["isLoggedIn", "connectedUser" ]),
     ...mapGetters(['isTestMode']),
-    showConversationArea() {
-      return this.activeConversation !== null;
-    },
-    activeConversationName() {
-      return this.activeConversation ? this.activeConversation.name : '';
-    },
-    isNewConversation() {
-      return this.activeConversation && !this.activeConversation.id;
-    },
-    canSendMessage() {
-      return this.activeConversation!=null && this.activeConversation.members!=null &&
-          this.activeConversation.members.length > 0 &&
-          this.newMessageContent!=null && this.newMessageContent.length > 0;
-    }
   },
   methods: {
     ...mapActions(["setLoading"]),
@@ -121,10 +43,7 @@ export default {
         });
         await this.setLoading(false);
     },
-    toggleListAreaCollapse() {
-      this.isListAreaCollapsed = !this.isListAreaCollapsed;
-    },
-    async createNewConversation() {
+    async createConversation() {
       await this.getContactList();
       this.activeConversation={
         id: null,
@@ -133,61 +52,46 @@ export default {
         messages: []
       }
     },
+    async connectToMessageExchangeService(){
+      MessageExchangeService.connect(this.prepareConversationList, this.updateConversation);
+    },
     closeConversation() {
       this.activeConversation = null;
     },
-    async sendMessage(){
-      if(this.canSendMessage){
-        await this.setLoading(true);
-        let conversation = this.formatConversation();
-        await MessageApiService.requestMessageSending(conversation).catch((error) => {
-          ErrorService.showErrorInAlert(error);
-        });
-        this.resetNewMessage();
-        await this.setLoading(false);
-      }
+    prepareConversationList(conversationList){
+      this.conversations = conversationList;
     },
-    formatConversation(){
-      if(this.isNewConversation){
-        return {
-          conversationId: null,
-          members : this.activeConversation.members,
-          content: this.newMessageContent
+    updateConversation(conversation){
+      this.setLoading(true);
+      let index = null;
+      for(let i=0; i<this.conversations.length; i++){
+        if(this.conversations[i].id === conversation.id){
+          if(this.activeConversation && this.activeConversation.id === conversation.id){
+            this.activeConversation = conversation;
+            this.scrollToBottom();
+          }
+          index = i;
+          break;
         }
       }
-      return {
-        conversationId: this.activeConversation.id,
-        content: this.newMessageContent
+      if(index!==null){
+        this.conversations[index] = conversation;
+      }else{
+        this.conversations.push(conversation);
       }
-    },
-    resetNewMessage(){
-      this.newMessageContent = null;
-    },
-    async connectToMessageExchangeService(){
-      MessageExchangeService.connect(this.prepareConversationList);
-    },
-    prepareConversationList(data){
-      this.conversations = data;
-      console.log('conversations', this.conversations);
+      this.setLoading(false);
     },
     selectConversation(index){
       this.activeConversation = this.conversations[index];
+      this.scrollToBottom();
     },
-    /*async updatePlayerConversationList(){
-      await this.setLoading(true);
-      await ConversationApiService.requestConversationList().catch((error) => {
-        ErrorService.showErrorInAlert(error);
-      });
-      await this.setLoading(false);
-    },*/
+    scrollToBottom() {
+      this.$refs.conversationComponent.scrollToBottom();
+    },
   },
   async mounted() {
     await this.connectToMessageExchangeService();
     if(this.isTestMode){
-      await this.createNewConversation();
-      this.activeConversation.members.push(this.playerContacts[1]);
-      this.activeConversation.members.push(this.playerContacts[2]);
-      this.newMessageContent = 'Test message group';
     }
   },
   beforeDestroy() {
@@ -209,38 +113,4 @@ export default {
   transition: all 0.3s;
 }
 
-.message-list-area {
-  right: 0;
-}
-.message-area {
-  min-height: 300px;
-  right: 302px;
-}
-
-.messenger-container.is-collapsed {
-  height: 40px;
-  overflow: hidden;
-}
-
-.conversation-list {
-  padding: 10px;
-  max-height: 300px;
-  overflow-y: auto;
-}
-
-.conversation {
-  padding: 8px;
-  border-bottom: 1px solid #eee;
-}
-
-button {
-  all: unset;
-  cursor: pointer;
-  padding: 10px;
-  text-align: center;
-  background-color: #0073b1;
-  color: white;
-  border-radius: 5px;
-  margin: 5px;
-}
 </style>

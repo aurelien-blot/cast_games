@@ -22,6 +22,9 @@
       </template>
     </div>
     <div class="row">
+      <div class="col-2 mt-2">
+        <span class="btn btn-secondary" @click="goToEditor()">Éditeur</span>
+      </div>
       <div class="col-2 mt-2" v-for="(game, index) in gameList" :key="index">
         <span class="btn btn-secondary" @click="goToGame(game)">{{game.name}}</span>
       </div>
@@ -57,6 +60,9 @@ export default {
   methods: {
     goToMyAccount() {
       this.$router.push({name: 'Player', params: {playerId: this.connectedUser.playerId}});
+    },
+    goToEditor() {
+      this.$router.push({name: 'Editor'});
     },
     goToGame(game) {
       this.$router.push({name: 'Game', params: {gameId: game.id}});

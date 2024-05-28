@@ -4,9 +4,11 @@ import Player from "@/views/Player.vue";
 import store from '@/store/store.js';
 import MailConfirmation from "@/views/user/MailConfirmation.vue";
 import ResetPassword from "@/views/user/ResetPassword.vue";
+import Editor from "@/views/Editor.vue";
 
 const routes = [
     { path: '/', component: Home, name: 'Home'},
+    { path: '/editor', component: Editor, name: 'Editor', meta: { requiresAuth: true } },
     { path: '/confirm-mail', component: MailConfirmation },
     { path: '/reset-password', component: ResetPassword },
     { path: '/player/:playerId', component: Player, name: 'Player',
